@@ -27,6 +27,7 @@ img {
   height: auto;
   margin-bottom: 20px;
   display: block;
+  border-radius: 50%;
 }
 ul {
   list-style: none;
