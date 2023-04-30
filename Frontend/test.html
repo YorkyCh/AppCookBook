@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Picture Gallery</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+
+      nav {
+        background-color: #333;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        padding: 0.5rem;
+      }
+
+      nav a:hover {
+        background-color: #fff;
+        color: #333;
+      }
+
+      h1 {
+        text-align: center;
+        margin: 2rem 0;
+      }
+
+      #picture-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: 2rem;
+      }
+
+      .picture-wrapper {
+        margin: 1rem;
+        text-align: center;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html">Home</a>
+      <h2>Category</h2>
+      <img
+        src="LOGO/Mexican CookBook-1.png"
+        alt="Logo"
+        height="70px"
+        width="70px"
+      />
+    </nav>
+    <h1>My Picture Gallery</h1>
+    <div id="picture-container">
+      <!-- Pictures will be added here dynamically -->
+    </div>
+
+    <script>
+      // Replace the following code with your own code to retrieve picture data from your database
+      const pictures = [
+        { title: "Picture 1", src: "https://via.placeholder.com/150" },
+        { title: "Picture 2", src: "https://via.placeholder.com/150" },
+        { title: "Picture 3", src: "https://via.placeholder.com/150" },
+        { title: "Picture 4", src: "https://via.placeholder.com/150" },
+      ];
+
+      // Loop through the pictures array and add each picture to the page
+      const pictureContainer = document.getElementById("picture-container");
+      pictures.forEach((picture) => {
+        const img = document.createElement("img");
+        img.src = picture.src;
+        img.alt = picture.title;
+        const title = document.createElement("h2");
+        title.textContent = picture.title;
+        const pictureWrapper = document.createElement("div");
+        pictureWrapper.classList.add("picture-wrapper");
+        pictureWrapper.appendChild(img);
+        pictureWrapper.appendChild(title);
+        pictureContainer.appendChild(pictureWrapper);
+      });
+    </script>
+  </body>
+</html>
