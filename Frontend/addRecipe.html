@@ -6,137 +6,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/viewPage.css" />
     <style>
-        #input-desc{
-            width: 500px;
-            height: 300px;
-        }
+      #input-desc {
+        width: 500px;
+        height: 300px;
+      }
     </style>
   </head>
   <body>
-    
-        <header>
-            <nav>
-              <div class="navbar-left">
-                
-              </div>
-              <div class="navbar-right">
-                <div class="dropdown">
-                  <button class="dropbtn">Cooktime</button>
-                  <div class="dropdown-content">
-                    <a href="#">Link 1</a>
-                    <a href="#">Link 2</a>
-                    <a href="#">Link 3</a>
-                  </div>
-                </div>
-                <div class="dropdown">
-                  <button class="dropbtn">Spiciness</button>
-                  <div class="dropdown-content">
-                    <a href="#">Link 1</a>
-                    <a href="#">Link 2</a>
-                    <a href="#">Link 3</a>
-                  </div>
-                </div>
-                <div class="dropdown">
-                  <button class="dropbtn">Category</button>
-                  <div class="dropdown-content">
-                    <a href="#">Link 1</a>
-                    <a href="#">Link 2</a>
-                    <a href="#">Link 3</a>
-                  </div>
-                </div>
-                <input type="text" id="search-input" name="search-input" />
-                <input type="submit" value="Search" />
-              </div>
-            </nav>
-            
-          </header>
-          <script>
-          function addInputs() {
-            // Create the first input
-            var input1 = document.createElement("input");
-            input1.style.marginRight = "5px";
-            input1.type = "text";
-            input1.name = "input1";
-            // Create the second input
-            var select2 = document.createElement("select");
-            select2.name = "select2";
-            select2.style.marginRight = "5px";
+    <header>
+      <nav>
+        <div class="navbar-left"></div>
+        <div class="navbar-right">
+          <a href="index.html" style="color: white; text-decoration: none"
+            >Home</a
+          >
+          <div class="dropdown">
+            <button class="dropbtn">Cooktime</button>
+            <div class="dropdown-content">
+              <a href="#">Link 1</a>
+              <a href="#">Link 2</a>
+              <a href="#">Link 3</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="dropbtn">Spiciness</button>
+            <div class="dropdown-content">
+              <a href="#">Link 1</a>
+              <a href="#">Link 2</a>
+              <a href="#">Link 3</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="dropbtn">Category</button>
+            <div class="dropdown-content">
+              <a href="#">Link 1</a>
+              <a href="#">Link 2</a>
+              <a href="#">Link 3</a>
+            </div>
+          </div>
+          <input type="text" id="search-input" name="search-input" />
+          <input type="submit" value="Search" />
+        </div>
+      </nav>
+    </header>
+    <script>
+      function addInputs() {
+        // Create the first input
+        var input1 = document.createElement("input");
+        input1.style.marginRight = "5px";
+        input1.type = "text";
+        input1.name = "input1";
+        // Create the second input
+        var select2 = document.createElement("select");
+        select2.name = "select2";
+        select2.style.marginRight = "5px";
 
-            var option1 = document.createElement("option");
-            option1.value = "ingtest1";
-            option1.text = "Test ingredient 1";
-            var option2 = document.createElement("option");
-            option2.value = "ingtest2";
-            option2.text = "Test ingredient 2";
-            var option3 = document.createElement("option");
-            option3.value = "ingtest3";
-            option3.text = "Test ingredient 3";
-            
-            // Add the option element to the select element
-            select2.appendChild(option1);
-            select2.appendChild(option2);
-            select2.appendChild(option3);
-            // Create a container div for the inputs 
-            var container = document.createElement("div");
-            // Add the inputs to the container div
-            container.appendChild(input1);
-            container.appendChild(select2);
-            // Add the container div before the button that was clicked
-            var button = document.getElementById("myButton");
-            button.parentNode.insertBefore(container, button);
-          }
-          function addSelect(){
-            var select1 = document.createElement("select");
-            select1.name = "select";
-            select1.style.marginRight = "5px";
-            var option1 = document.createElement("option");
-            option1.value = "test";
-            option1.text = "Test";
-  
-            // Create the second option element
-            var option2 = document.createElement("option");
-            option2.value = "test2";
-            option2.text = "Test2";
-        
-            // Add the option elements to the select element
-            select1.appendChild(option1);
-            select1.appendChild(option2);
-            var button = document.getElementById("myButton2");
-            button.parentNode.insertBefore(select1, button);
-          }
-        </script>
+        var option1 = document.createElement("option");
+        option1.value = "ingtest1";
+        option1.text = "Test ingredient 1";
+        var option2 = document.createElement("option");
+        option2.value = "ingtest2";
+        option2.text = "Test ingredient 2";
+        var option3 = document.createElement("option");
+        option3.value = "ingtest3";
+        option3.text = "Test ingredient 3";
 
+        // Add the option element to the select element
+        select2.appendChild(option1);
+        select2.appendChild(option2);
+        select2.appendChild(option3);
+        // Create a container div for the inputs
+        var container = document.createElement("div");
+        // Add the inputs to the container div
+        container.appendChild(input1);
+        container.appendChild(select2);
+        // Add the container div before the button that was clicked
+        var button = document.getElementById("myButton");
+        button.parentNode.insertBefore(container, button);
+      }
+      function addSelect() {
+        var select1 = document.createElement("select");
+        select1.name = "select";
+        select1.style.marginRight = "5px";
+        var option1 = document.createElement("option");
+        option1.value = "test";
+        option1.text = "Test";
 
-          <main>
-            <ul>
-            <li>Name of the recipe:</li>    
-            <input type="text" id="input-name" name="input" />
-            
-            <li>Preparation time (minutes - number only):</li>    
-            <input type="text" id="input-time" name="input" />
-            
-            <li>Ingredients (amount - number only, ingredient):</li> 
-            <input type="text" id="input-ingr" name="input" value="Amount"/>
-            
-            <select id="ingredient-select" name="select" value="Ingredient">
-                <option value="ingtest1">Test ingredient 1</option>
-                <option value="ingtest2">Test ingredient 2</option>
-                <option value="ingtest3">Test ingredient 3</option>
-            </select>
-            <br>
-            <button id="myButton" onclick="addInputs()">Add more ingredients</button>
-            <li>Description:</li>    
-            <input type="text" id="input-desc" name="input" />
-            
-            <li>Tags:</li>   
-            <select id="tags" name="select">
-                <option value="test">Test</option>
-                <option value="test2">Test2</option>
-              </select>
-              <button id="myButton2" onclick="addSelect()">Add more tags</button>
-              <br><button type="submit" id="submit-recipe">Create recipe</button>
-            </ul>            
-          </main>
-    
+        // Create the second option element
+        var option2 = document.createElement("option");
+        option2.value = "test2";
+        option2.text = "Test2";
+
+        // Add the option elements to the select element
+        select1.appendChild(option1);
+        select1.appendChild(option2);
+        var button = document.getElementById("myButton2");
+        button.parentNode.insertBefore(select1, button);
+      }
+    </script>
+
+    <main>
+      <ul>
+        <li>Name of the recipe:</li>
+        <input type="text" id="input-name" name="input" />
+
+        <li>Preparation time (minutes - number only):</li>
+        <input type="text" id="input-time" name="input" />
+
+        <li>Ingredients (amount - number only, ingredient):</li>
+        <input type="text" id="input-ingr" name="input" value="Amount" />
+
+        <select id="ingredient-select" name="select" value="Ingredient">
+          <option value="ingtest1">Test ingredient 1</option>
+          <option value="ingtest2">Test ingredient 2</option>
+          <option value="ingtest3">Test ingredient 3</option>
+        </select>
+        <br />
+        <button id="myButton" onclick="addInputs()">
+          Add more ingredients
+        </button>
+        <li>Description:</li>
+        <input type="text" id="input-desc" name="input" />
+
+        <li>Tags:</li>
+        <select id="tags" name="select">
+          <option value="test">Test</option>
+          <option value="test2">Test2</option>
+        </select>
+        <button id="myButton2" onclick="addSelect()">Add more tags</button>
+        <br /><button type="submit" id="submit-recipe">Create recipe</button>
+      </ul>
+    </main>
   </body>
 </html>
