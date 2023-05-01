@@ -15,8 +15,9 @@ nav a {
 }
 
 nav a:hover {
-  background-color: #fff;
-  color: #333;
+  background-color: rgb(90, 0, 0);
+  color: white;
+  border-radius: 20px;
 }
 
 /* Left side of navigation bar */
@@ -44,6 +45,7 @@ nav a:hover {
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
   z-index: 1;
 }
 
