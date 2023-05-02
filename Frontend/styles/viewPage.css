@@ -20,6 +20,11 @@ nav a:hover {
   color: white;
   border-radius: 20px;
 }
+nav button:hover {
+  background-color: rgb(90, 0, 0);
+  color: white;
+  border-radius: 20px;
+}
 main {
   max-width: 800px;
   margin: 0 auto;

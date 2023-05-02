@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Recipe Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/viewPage.css" />
+    <style>
+      .ingredient {
+        margin-bottom: 10px;
+      }
+
+      .ingredient p {
+        display: inline-block;
+        margin: 0;
+        font-weight: bold;
+      }
+
+      .ingredient input {
+        display: inline-block;
+        margin: 0;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="navbar-left">
+          <h1>Recipe Title</h1>
+        </div>
+        <div
+          class="navbar-right"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <a href="index.html" style="color: white; text-decoration: none"
+            >Home</a
+          >
+          <button class="dropbtn">Confirm</button>
+          <button class="dropbtn">Add</button>
+          <button class="dropbtn">Delete</button>
+          <form id="search-input" method="get">
+            <input
+              type="search"
+              class="form-control input-thick-border"
+              id="test"
+              placeholder="Search..."
+              name="keyword"
+              style="border-radius: 50px"
+            />
+            <input type="submit" value="Search" style="" />
+          </form>
+
+          <script type="text/javascript">
+            document.getElementById("search-input").onsubmit = function () {
+              window.location =
+                "http://127.0.0.1:5500/Frontend/" +
+                document.getElementById("test").value +
+                ".html";
+              return false;
+            };
+          </script>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div>
+        <form
+          style="float: right; width: 420px; height: 400px; align-items: right"
+        >
+          <img src="https://via.placeholder.com/350" />
+          <label for="image-upload" style="margin-left: 30px"
+            >Upload an image:</label
+          >
+          <input type="file" id="image-upload" name="image-upload" />
+        </form>
+
+        <ul>
+          <li><strong>Category:</strong>--------</li>
+          <select id="ingredient-select" name="select" value="Ingredient">
+            <option value="ingtest1">Test ingredient 1</option>
+            <option value="ingtest2">Test ingredient 2</option>
+            <option value="ingtest3">Test ingredient 3</option>
+          </select>
+          <li><strong>Cook Time:</strong>--------</li>
+          <select id="ingredient-select" name="select" value="Ingredient">
+            <option value="ingtest1">Test ingredient 1</option>
+            <option value="ingtest2">Test ingredient 2</option>
+            <option value="ingtest3">Test ingredient 3</option>
+          </select>
+          <li><strong>Spiciness:</strong>--------</li>
+          <select id="ingredient-select" name="select" value="Ingredient">
+            <option value="ingtest1">Test ingredient 1</option>
+            <option value="ingtest2">Test ingredient 2</option>
+            <option value="ingtest3">Test ingredient 3</option>
+          </select>
+        </ul>
+        <h2>Ingredients</h2>
+        <div class="ingredient">
+          <p>Flour</p>
+          <input type="text" name="flour-amount" />
+        </div>
+
+        <div class="ingredient">
+          <p>Sugar</p>
+          <input type="text" name="sugar-amount" />
+        </div>
+
+        <div class="ingredient">
+          <p>Salt</p>
+          <input type="text" name="salt-amount" />
+        </div>
+
+        <!-- Add more ingredients here as needed -->
+      </div>
+      <h2>Instructions</h2>
+      <ol>
+        <li>Preheat oven to 350°F. Grease an 8-inch square baking pan.</li>
+        <input type="text" size="90" />
+
+        <li>
+          In a large mixing bowl, whisk together the flour, sugar, cocoa powder,
+          baking powder, baking soda, and salt.
+        </li>
+        <input type="text" size="90" />
+        <li>
+          Add the milk, vegetable oil, egg, and vanilla extract to the dry
+          ingredients. Mix until well combined.
+        </li>
+        <input type="text" size="90" />
+        <li>
+          Stir in the hot water until the batter is smooth and well combined.
+        </li>
+        <input type="text" size="90" />
+        <li>
+          Pour the batter into the prepared pan and bake for 30 minutes or until
+          a toothpick inserted into the center comes out clean.
+        </li>
+        <input type="text" size="90" />
+        <li>Let cool in the pan for 5 minutes before removing and slicing.</li>
+        <input type="text" size="90" />
+      </ol>
+    </main>
+  </body>
+</html>
