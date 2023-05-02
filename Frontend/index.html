@@ -41,10 +41,21 @@
       </div>
     </nav>
     <div class="search-container">
-        <div class="search-box">
-          <input type="text" id="search-input" name="search-input" />
-          <input type="submit" value="Search" />
-          <a href="Recipe.html">Temporary ViewPage</a>
+      <div class="search-box">
+      <form id="search-input" method="get">
+       
+          <input type="text" id="test" name="search-input" />
+          <input type="submit" value="Search" style="margin-left: 190px; margin-bottom: 2px;" />
+          </form>
+          <script type="text/javascript">
+            document.getElementById("search-input").onsubmit = function () {
+              window.location =
+                "http://127.0.0.1:5500/Frontend/" +
+                document.getElementById("test").value + ".html";
+              return false;
+            };
+          </script>
         </div>
   </body>
 </html>
+

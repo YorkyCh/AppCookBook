@@ -44,14 +44,27 @@
               <a href="#">Link 3</a>
             </div>
           </div>
-          <input
-            type="text"
-            id="search-input"
-            name="search-input"
-            style="border-radius: 50px"
-            placeholder="Search"
-          />
-          <input type="submit" value="Search" style="" />
+          <form id="search-input" method="get">
+            <input
+              type="search"
+              class="form-control input-thick-border"
+              id="test"
+              placeholder="Search..."
+              name="keyword"
+              style="border-radius: 50px"
+            />
+            <input type="submit" value="Search" style="" />
+          </form>
+
+          <script type="text/javascript">
+            document.getElementById("search-input").onsubmit = function () {
+              window.location =
+                "http://127.0.0.1:5500/Frontend/" +
+                document.getElementById("test").value +
+                ".html";
+              return false;
+            };
+          </script>
         </div>
       </nav>
     </header>
