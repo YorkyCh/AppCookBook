@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Recipe List{% endblock %}
+
+{% block content %}
+  <h1>Recipe List</h1>
+  {% for recipe in recipes %}
+    <div class="recipe-card" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+      <h2><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.name }}</a></h2>
+      <img src="{{ recipe.image.url }}" alt="{{ recipe.name }} image" class="recipe-image" style="width: 100%; max-height: 300px; object-fit: cover;">
+      <ul>
+        <li><strong>Categories:</strong>
+          {% for category in recipe.categories.all %}
+            {{ category.name }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </li>
+        <li><strong>Cook Time:</strong> {{ recipe.cook_time }} minutes</li>
+        <li><strong>Spiciness:</strong> {{ recipe.spiciness }}</li>
+      </ul>
+    </div>
+  {% endfor %}
+{% endblock %}

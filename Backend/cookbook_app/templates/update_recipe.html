@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block extra_head %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const addIngredientButton = document.getElementById("add-ingredient");
+
+      addIngredientButton.addEventListener("click", function() {
+        const ingredientsContainer = document.getElementById("ingredients-container");
+
+        const formIdx = parseInt(document.getElementById('id_ingredients-TOTAL_FORMS').value);
+        ingredientsContainer.insertAdjacentHTML('beforeend', `
+          <div class="ingredient">
+            <div class="form-field">
+              <label for="id_ingredients-${formIdx}-ingredient">Ingredient:</label>
+              <select name="ingredients-${formIdx}-ingredient" id="id_ingredients-${formIdx}-ingredient">
+                <option value="">---------</option>
+                {% for ingredient in form.ingredient.field.queryset %}
+                  <option value="{{ ingredient.pk }}">{{ ingredient.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="id_ingredients-${formIdx}-amount">Amount:</label>
+              <input type="text" name="ingredients-${formIdx}-amount" id="id_ingredients-${formIdx}-amount" required>
+            </div>
+          </div>
+        `);
+        document.getElementById('id_ingredients-TOTAL_FORMS').value = formIdx + 1;
+      });
+    });
+  </script>
+{% endblock %}
+
+
+{% block content %}
+  <h1>Edit Recipe</h1>
+  <form method="post" enctype="multipart/form-data" action="{% url 'update_recipe' recipe.id %}">
+    {% csrf_token %}
+    {{ form.name.label_tag }} {{ form.name }}
+    {{ form.description.label_tag }} {{ form.description }}
+    {{ form.preparation_time.label_tag }} {{ form.preparation_time }}
+    {{ form.cook_time.label_tag }} {{ form.cook_time }}
+    {{ form.image.label_tag }} {{ form.image }}
+    {{ form.spiciness.label_tag }} {{ form.spiciness }}
+    {{ form.steps.label_tag }} {{ form.steps }}
+    <h3>Ingredients:</h3>
+    {{ formset.management_form }}
+    <div id="ingredients-container">
+      {% for form in formset %}
+      <div class="ingredient">
+        {{ form.id.as_hidden }}
+        <div class="form-field">
+        {{ form.ingredient.label_tag }} {{ form.ingredient }}
+        </div>
+      <div class="form-field">
+        {{ form.amount.label_tag }} {{ form.amount }}
+      </div>
+    </div>
+    {% endfor %}
+    </div>
+    <button type="button" id="add-ingredient">Add Ingredient</button>
+    <h3>Categories:</h3>
+    {% for category in categories %}
+      <div>
+        <input type="checkbox" name="categories" value="{{ category.pk }}" id="category_{{ category.pk }}" {% if category in recipe.categories.all %}checked{% endif %}>
+        <label for="category_{{ category.pk }}">{{ category.name }}</label>
+      </div>
+    {% endfor %}
+    <button type="submit">Update Recipe</button>
+  </form>
+{% endblock %}

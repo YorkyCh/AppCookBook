@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Search Results</h2>
+  <ul>
+    {% for recipe in recipes %}
+      <li>
+        <a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

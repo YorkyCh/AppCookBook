@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+
+{% block title %}{{ recipe.name }}{% endblock %}
+
+{% block content %}
+  <h1>{{ recipe.name }}</h1>
+  <img src="{{ recipe.image.url }}" alt="{{ recipe.name }} image" class="recipe-image">
+  <ul>
+    <li><strong>Preparation Time:</strong> {{ recipe.preparation_time }} minutes</li>
+    <li><strong>Cook Time:</strong> {{ recipe.cook_time }} minutes</li>
+    <li><strong>Spiciness:</strong> {{ recipe.spiciness }}</li>
+    <li><strong>Description:</strong> {{ recipe.description }}</li>
+    <li><strong>Steps:</strong>
+      <ol>
+        {% for step in recipe.steps|split:"\n" %}
+        <li>{{ step }}</li>
+        {% endfor %}
+      </ol>
+    </li>
+    <li><strong>Categories:</strong>
+      {% for category in recipe.categories.all %}
+        {{ category.name }}{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </li>
+    <li><strong>Ingredients:</strong>
+      <ul>
+        {% for ingredient_amount in recipe.recipeingredient_set.all %}
+          <li>{{ ingredient_amount.ingredient.name }} - {{ ingredient_amount.amount }} {{ ingredient_amount.unit }}</li>
+        {% endfor %}
+      </ul>
+    </li>
+  </ul>
+  <a href="{% url 'update_recipe' recipe.pk %}">Edit Recipe</a>
+  <a href="{% url 'delete_recipe' recipe.pk %}">Delete Recipe</a>
+{% endblock %}
