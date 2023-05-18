@@ -154,63 +154,58 @@
       "
     >
       <main>
-        <div>
-          <form
-            style="
-              float: right;
-              width: 420px;
-              height: 400px;
-              align-items: right;
-            "
-          >
-            <img src="https://via.placeholder.com/350" />
-            <label for="image-upload" style="margin-left: 30px"
-              >Upload an image:</label
-            >
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <div>
+            <div style="display: flex; align-items: center">
+              <strong>Category:</strong>
+              <select
+                id="category-select"
+                name="select"
+                value="Category"
+                style="margin-left: 10px"
+              >
+                <option value="cat1">Category 1</option>
+                <option value="cat2">Category 2</option>
+                <option value="cat3">Category 3</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: center">
+              <strong>Cook Time:</strong>
+              <select
+                id="cook-time-select"
+                name="select"
+                value="Cook Time"
+                style="margin-left: 10px"
+              >
+                <option value="time1">Time 1</option>
+                <option value="time2">Time 2</option>
+                <option value="time3">Time 3</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: center">
+              <strong>Spiciness:</strong>
+              <select
+                id="spiciness-select"
+                name="select"
+                value="Spiciness"
+                style="margin-left: 10px"
+              >
+                <option value="spicy1">Spicy 1</option>
+                <option value="spicy2">Spicy 2</option>
+                <option value="spicy3">Spicy 3</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <img
+              src="image-url.jpg"
+              style="width: 200px; height: 200px; margin-left: 90px"
+            />
+            <label for="image-upload" style="margin-left: 30px">Upload an image:</label>
             <input type="file" id="image-upload" name="image-upload" />
-          </form>
-
-          <ul>
-            <div>
-              <li><strong>Category:</strong>--------</li>
-              <select
-                id="ingredient-select"
-                name="select"
-                value="Ingredient"
-                style="margin-bottom: 10px"
-              >
-                <option value="ingtest1">Test ingredient 1</option>
-                <option value="ingtest2">Test ingredient 2</option>
-                <option value="ingtest3">Test ingredient 3</option>
-              </select>
-            </div>
-            <div>
-              <li><strong>Cook Time:</strong>--------</li>
-              <select
-                id="ingredient-select"
-                name="select"
-                value="Ingredient"
-                style="margin-bottom: 10px"
-                5
-              >
-                <option value="ingtest1">Test ingredient 1</option>
-                <option value="ingtest2">Test ingredient 2</option>
-                <option value="ingtest3">Test ingredient 3</option>
-              </select>
-            </div>
-            <div>
-              <li><strong>Spiciness:</strong>--------</li>
-              <select
-                id="ingredient-select"
-                name="select"
-                value="Ingredient"
-                style="margin-bottom: 10px"
-              >
-                <option value="ingtest1">Test ingredient 1</option>
-                <option value="ingtest2">Test ingredient 2</option>
-                <option value="ingtest3">Test ingredient 3</option>
-              </select>
-            </div>
+          </div>
+        </div>
+        
             <div id="ingredient-container">
               <div style="display: flex; align-items: center">
                 <input
@@ -251,6 +246,41 @@
             <button id="myButton" onclick="addInputs()">
               Add more ingredients
             </button>
+            <h1 style="margin-left: 20px; margin-top: 10px;">Edit Recipe Instructions</h1>
+    
+            <ul id="instruction-list" style="list-style-type: decimal; padding-left: 40px;">
+                <li>Preheat the oven to 350°F.</li>
+                <li>In a large mixing bowl, combine the flour, sugar, and salt.</li>
+                <li>Add the eggs, milk, and vanilla extract. Mix well.</li>
+            </ul>
+            
+            <button onclick="editInstruction()" style="margin-left: 20px;">Edit Instruction</button>
+            <button onclick="addInstruction()" style="margin-left: 10px; margin-top: 10px;">Add Instruction</button>
+            
+            <script>
+                function editInstruction() {
+                    var stepNum = parseInt(prompt("Enter the step number you want to edit:"));
+                    var instructionList = document.getElementById("instruction-list");
+                    var instructions = instructionList.getElementsByTagName("li");
+                    
+                    if (stepNum >= 1 && stepNum <= instructions.length) {
+                        var updatedInstruction = prompt("Enter the updated instruction:");
+                        instructions[stepNum - 1].textContent = updatedInstruction;
+                    } else {
+                        alert("Invalid step number.");
+                    }
+                }
+                
+                function addInstruction() {
+                    var newInstruction = prompt("Enter the new instruction:");
+                    if (newInstruction) {
+                        var instructionList = document.getElementById("instruction-list");
+                        var newStep = document.createElement("li");
+                        newStep.textContent = newInstruction;
+                        instructionList.appendChild(newStep);
+                    }
+                }
+            </script>
             
 
           <!-- Add more ingredients here as needed -->
@@ -261,36 +291,3 @@
   </body>
 </html>
 
-<!-- <h2>Instructions</h2>
-        <ol>
-          <div>
-            <li>Preheat oven to 350°F. Grease an 8-inch square baking pan.</li>
-            <input
-              type="text"
-              size="90"
-              style="margin-top: 10px; margin-bottom: 10px"
-            />
-          </div>
-          <div>
-            <li>
-              In a large mixing bowl, whisk together the flour, sugar, cocoa
-              powder, baking powder, baking soda, and salt.
-            </li>
-            <input
-              type="text"
-              size="90"
-              style="margin-top: 10px; margin-bottom: 10px"
-            />
-          </div>
-          <div>
-            <li>
-              Add the milk, vegetable oil, egg, and vanilla extract to the dry
-              ingredients. Mix until well combined.
-            </li>
-            <input
-              type="text"
-              size="90"
-              style="margin-top: 10px; margin-bottom: 10px"
-            />
-          </div>
-        </ol> -->

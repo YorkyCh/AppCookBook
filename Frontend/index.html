@@ -4,29 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
     <link rel="stylesheet" href="styles/mainPage.css" />
+    <title>Mexican CookBook</title>
   </head>
   <body>
     <nav>
       <div class="navbar-left">
         <a href="addRecipe.html">Add Recipe</a>
-        <div class="dropdown">
-          <button class="dropbtn">Cooktime</button>
-          <div class="dropdown-content">
-            <a href="#">Link 1</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
-          </div>
-        </div>
-        <div class="dropdown">
-          <button class="dropbtn">Spiciness</button>
-          <div class="dropdown-content">
-            <a href="#">Link 1</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
-          </div>
-        </div>
         <div class="dropdown">
           <button class="dropbtn">Category</button>
           <div class="dropdown-content">
@@ -40,13 +24,25 @@
         <img src="LOGO/Mexican CookBook-1.png" alt="Logo" height="50px" width="60px" />
       </div>
     </nav>
+    <div
+      style="
+        background-image: url('https://cw33.com/wp-content/uploads/sites/8/2022/08/GettyImages-1213818930.jpg?w=2560&h=1440&crop=1');
+        background-repeat: no-repeat;
+        background-size: cover;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+    <main style="max-width: 150px; background-color: #333;">
     <div class="search-container">
-      
       <form id="search-input" method="get">
        <div class="search-box">
-          <input type="text" id="test" name="search-input" style="text-align: center;" placeholder="search"/>
+          <input type="text" id="test" name="search-input" style="text-align: center; border-radius: 5px;" placeholder="search"/>
           <input type="submit" value="Search" />
           </form>
+        </main>
           <script type="text/javascript">
             document.getElementById("search-input").onsubmit = function () {
               window.location =
