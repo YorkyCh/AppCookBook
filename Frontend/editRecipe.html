@@ -138,6 +138,51 @@
           firstDeleteButton.classList.add("hidden");
         }
       }
+      function addSelect() {
+        // Create the container div for the inputs
+        var container = document.createElement("div");
+        container.style.display = "flex";
+        container.style.alignItems = "center";
+
+        // Create the input for the tag
+        var inputTag = document.createElement("input");
+        inputTag.type = "text";
+        inputTag.name = "input-tag";
+        inputTag.placeholder = "Tag";
+        inputTag.style.marginRight = "5px";
+        inputTag.setAttribute("list", "tag-list");
+
+        // Create the datalist for the tag input
+        var tagDatalist = document.createElement("datalist");
+        tagDatalist.id = "tag-list";
+
+        // Generate the options for the tag datalist
+        var tags = ["Test", "Test2"];
+        for (var i = 0; i < tags.length; i++) {
+          var option = document.createElement("option");
+          option.value = tags[i];
+          tagDatalist.appendChild(option);
+        }
+
+        // Create the delete button
+        var deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.style.marginRight = "5px";
+        deleteButton.onclick = function () {
+          container.parentNode.removeChild(container);
+        };
+
+        // Add the input and delete button to the container div
+        container.appendChild(inputTag);
+        container.appendChild(deleteButton);
+
+        // Add the container div before the "Add more tags" button
+        var addButton = document.getElementById("myButton2");
+        addButton.parentNode.insertBefore(container, addButton);
+
+        // Add the datalist to the document
+        document.head.appendChild(tagDatalist);
+      }
           </script>
         </div>
       </nav>
@@ -153,7 +198,7 @@
         align-items: center;
       "
     >
-      <main>
+      <main style="margin-top: 10px">
         <div style="display: flex; align-items: center; margin-bottom: 10px;">
           <div>
             <div style="display: flex; align-items: center">
@@ -243,9 +288,24 @@
                 </button>
               </div>
             </div>
-            <button id="myButton" onclick="addInputs()">
+            <button id="myButton" onclick="addInputs()" style="margin-top: 5px; margin-bottom: 5px">
               Add more ingredients
             </button>
+            <br>
+          <input
+            type="text"
+            id="tags"
+            name="input"
+            list="tag-list"
+            placeholder="Tag"
+          />
+          <datalist id="tag-list">
+            <option value="Test"></option>
+            <option value="Test2"></option>
+          </datalist>
+          <button style="display: none">Delete</button>
+          <br />
+          <button id="myButton2" onclick="addSelect()" style="margin-top: 5px; margin-bottom: 5px">Add more tags</button>
             <h1 style="margin-left: 20px; margin-top: 10px;">Edit Recipe Instructions</h1>
     
             <ul id="instruction-list" style="list-style-type: decimal; padding-left: 40px;">
