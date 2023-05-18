@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Mexican CookBook</title>
+
     <meta charset="UTF-8" />
-    <title>Recipe Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/viewPage.css" />
     <style>
@@ -27,7 +28,7 @@
   </head>
   <body>
     <header>
-      <nav>
+      <nav style="margin-bottom: 0px">
         <div class="navbar-left">
           <h1>Recipe Title</h1>
         </div>
@@ -63,115 +64,233 @@
                 ".html";
               return false;
             };
+            function addInputs() {
+        // Create the container div for the inputs
+        var container = document.createElement("div");
+        container.style.display = "flex";
+        container.style.alignItems = "center";
+
+        // Create the first input
+        var inputAmount = document.createElement("input");
+        inputAmount.type = "text";
+        inputAmount.name = "input-amount";
+        inputAmount.placeholder = "Amount";
+        inputAmount.style.marginRight = "5px";
+
+        // Create the datalist for the amount input
+        var amountDatalist = document.createElement("datalist");
+        amountDatalist.id = "amount-list";
+        amountDatalist.innerHTML = `
+          <option value="1"></option>
+          <option value="2"></option>
+          <option value="3"></option>
+        `;
+
+        // Set the datalist for the amount input
+        inputAmount.setAttribute("list", "amount-list");
+
+        // Create the second input
+        var inputIngredient = document.createElement("input");
+        inputIngredient.type = "text";
+        inputIngredient.name = "input-ingredient";
+        inputIngredient.placeholder = "Ingredient";
+        inputIngredient.style.marginRight = "5px";
+
+        // Create the datalist for the ingredient input
+        var ingredientDatalist = document.createElement("datalist");
+        ingredientDatalist.id = "ingredient-list";
+        ingredientDatalist.innerHTML = `
+          <option value="Test ingredient 1"></option>
+          <option value="Test ingredient 2"></option>
+          <option value="Test ingredient 3"></option>
+        `;
+
+        // Set the datalist for the ingredient input
+        inputIngredient.setAttribute("list", "ingredient-list");
+
+        // Create the delete button
+        var deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.style.marginRight = "5px";
+        deleteButton.className = "delete-button";
+        deleteButton.onclick = function () {
+          container.parentNode.removeChild(container);
+        };
+
+        // Add the inputs and delete button to the container div
+        container.appendChild(inputAmount);
+        container.appendChild(inputIngredient);
+        container.appendChild(deleteButton);
+
+        // Add the container div before the button that was clicked
+        var addButton = document.getElementById("myButton");
+        addButton.parentNode.insertBefore(container, addButton);
+
+        // Add the datalists to the document
+        document.head.appendChild(amountDatalist);
+        document.head.appendChild(ingredientDatalist);
+
+        // Hide the first delete button
+        var firstDeleteButton = document.querySelector(
+          "#ingredient-container .delete-button"
+        );
+        if (firstDeleteButton) {
+          firstDeleteButton.classList.add("hidden");
+        }
+      }
           </script>
         </div>
       </nav>
     </header>
-    <main>
-      <div>
-        <form
-          style="float: right; width: 420px; height: 400px; align-items: right"
-        >
-          <img src="https://via.placeholder.com/350" />
-          <label for="image-upload" style="margin-left: 30px"
-            >Upload an image:</label
+    <div
+      style="
+        background-image: url('https://cw33.com/wp-content/uploads/sites/8/2022/08/GettyImages-1213818930.jpg?w=2560&h=1440&crop=1');
+        background-repeat: no-repeat;
+        background-size: cover;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <main>
+        <div>
+          <form
+            style="
+              float: right;
+              width: 420px;
+              height: 400px;
+              align-items: right;
+            "
           >
-          <input type="file" id="image-upload" name="image-upload" />
-        </form>
-
-        <ul>
-          <div>
-            <li><strong>Category:</strong>--------</li>
-            <select
-              id="ingredient-select"
-              name="select"
-              value="Ingredient"
-              style="margin-bottom: 10px"
+            <img src="https://via.placeholder.com/350" />
+            <label for="image-upload" style="margin-left: 30px"
+              >Upload an image:</label
             >
-              <option value="ingtest1">Test ingredient 1</option>
-              <option value="ingtest2">Test ingredient 2</option>
-              <option value="ingtest3">Test ingredient 3</option>
-            </select>
-          </div>
-          <div>
-            <li><strong>Cook Time:</strong>--------</li>
-            <select
-              id="ingredient-select"
-              name="select"
-              value="Ingredient"
-              style="margin-bottom: 10px"
-              5
-            >
-              <option value="ingtest1">Test ingredient 1</option>
-              <option value="ingtest2">Test ingredient 2</option>
-              <option value="ingtest3">Test ingredient 3</option>
-            </select>
-          </div>
-          <div>
-            <li><strong>Spiciness:</strong>--------</li>
-            <select
-              id="ingredient-select"
-              name="select"
-              value="Ingredient"
-              style="margin-bottom: 10px"
-            >
-              <option value="ingtest1">Test ingredient 1</option>
-              <option value="ingtest2">Test ingredient 2</option>
-              <option value="ingtest3">Test ingredient 3</option>
-            </select>
-          </div>
-        </ul>
-        <h2>Ingredients</h2>
-        <div class="ingredient">
-          <p>Flour</p>
-          <input type="text" name="flour-amount" />
+            <input type="file" id="image-upload" name="image-upload" />
+          </form>
+
+          <ul>
+            <div>
+              <li><strong>Category:</strong>--------</li>
+              <select
+                id="ingredient-select"
+                name="select"
+                value="Ingredient"
+                style="margin-bottom: 10px"
+              >
+                <option value="ingtest1">Test ingredient 1</option>
+                <option value="ingtest2">Test ingredient 2</option>
+                <option value="ingtest3">Test ingredient 3</option>
+              </select>
+            </div>
+            <div>
+              <li><strong>Cook Time:</strong>--------</li>
+              <select
+                id="ingredient-select"
+                name="select"
+                value="Ingredient"
+                style="margin-bottom: 10px"
+                5
+              >
+                <option value="ingtest1">Test ingredient 1</option>
+                <option value="ingtest2">Test ingredient 2</option>
+                <option value="ingtest3">Test ingredient 3</option>
+              </select>
+            </div>
+            <div>
+              <li><strong>Spiciness:</strong>--------</li>
+              <select
+                id="ingredient-select"
+                name="select"
+                value="Ingredient"
+                style="margin-bottom: 10px"
+              >
+                <option value="ingtest1">Test ingredient 1</option>
+                <option value="ingtest2">Test ingredient 2</option>
+                <option value="ingtest3">Test ingredient 3</option>
+              </select>
+            </div>
+            <div id="ingredient-container">
+              <div style="display: flex; align-items: center">
+                <input
+                  type="text"
+                  id="input-ingr-amount"
+                  name="input"
+                  placeholder="Amount"
+                  style="margin-right: 5px"
+                  list="tag-list1"
+                />
+                <datalist id="tag-list1">
+                  <option value="1"></option>
+                  <option value="2"></option>
+                  <option value="3"></option>
+                </datalist>
+                <input
+                  type="text"
+                  id="input-ingr"
+                  name="input"
+                  list="tag-list2"
+                  placeholder="Ingredient"
+                  list="tag-list2"
+                />
+                <datalist id="tag-list2">
+                  <option value="Test ingredient 1"></option>
+                  <option value="Test ingredient 2"></option>
+                  <option value="Test ingredient 3"></option>
+                </datalist>
+                <button
+                  class="delete-button"
+                  onclick="removeIngredient(this)"
+                  style="display: none; margin-right: 5px"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+            <button id="myButton" onclick="addInputs()">
+              Add more ingredients
+            </button>
+            
+
+          <!-- Add more ingredients here as needed -->
         </div>
 
-        <div class="ingredient">
-          <p>Sugar</p>
-          <input type="text" name="sugar-amount" />
-        </div>
-
-        <div class="ingredient">
-          <p>Salt</p>
-          <input type="text" name="salt-amount" />
-        </div>
-
-        <!-- Add more ingredients here as needed -->
-      </div>
-      <h2>Instructions</h2>
-      <ol>
-        <div>
-          <li>Preheat oven to 350°F. Grease an 8-inch square baking pan.</li>
-          <input
-            type="text"
-            size="90"
-            style="margin-top: 10px; margin-bottom: 10px"
-          />
-        </div>
-        <div>
-          <li>
-            In a large mixing bowl, whisk together the flour, sugar, cocoa
-            powder, baking powder, baking soda, and salt.
-          </li>
-          <input
-            type="text"
-            size="90"
-            style="margin-top: 10px; margin-bottom: 10px"
-          />
-        </div>
-        <div>
-          <li>
-            Add the milk, vegetable oil, egg, and vanilla extract to the dry
-            ingredients. Mix until well combined.
-          </li>
-          <input
-            type="text"
-            size="90"
-            style="margin-top: 10px; margin-bottom: 10px"
-          />
-        </div>
-      </ol>
-    </main>
+      </main>
+    </div>
   </body>
 </html>
+
+<!-- <h2>Instructions</h2>
+        <ol>
+          <div>
+            <li>Preheat oven to 350°F. Grease an 8-inch square baking pan.</li>
+            <input
+              type="text"
+              size="90"
+              style="margin-top: 10px; margin-bottom: 10px"
+            />
+          </div>
+          <div>
+            <li>
+              In a large mixing bowl, whisk together the flour, sugar, cocoa
+              powder, baking powder, baking soda, and salt.
+            </li>
+            <input
+              type="text"
+              size="90"
+              style="margin-top: 10px; margin-bottom: 10px"
+            />
+          </div>
+          <div>
+            <li>
+              Add the milk, vegetable oil, egg, and vanilla extract to the dry
+              ingredients. Mix until well combined.
+            </li>
+            <input
+              type="text"
+              size="90"
+              style="margin-top: 10px; margin-bottom: 10px"
+            />
+          </div>
+        </ol> -->
