@@ -4,6 +4,7 @@
 {% block title %}{{ recipe.name }}{% endblock %}
 
 {% block content %}
+<div class="main-block">
   <h1>{{ recipe.name }}</h1>
   <img src="{{ recipe.image.url }}" alt="{{ recipe.name }} image" class="recipe-image">
   <ul>
@@ -33,4 +34,5 @@
   </ul>
   <a href="{% url 'update_recipe' recipe.pk %}">Edit Recipe</a>
   <a href="{% url 'delete_recipe' recipe.pk %}">Delete Recipe</a>
+</div>
 {% endblock %}

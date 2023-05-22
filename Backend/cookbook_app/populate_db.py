@@ -2,7 +2,7 @@ import os
 import django
 import sys
 
-sys.path.append('/home/mploig/developer/Mexican_cookbook/cookbook_project')
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'cookbook_project.settings'
 django.setup()
 

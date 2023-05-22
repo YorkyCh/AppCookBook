@@ -16,6 +16,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cookbook_app',
+    'widget_tweaks',
+    'django_select2'
+    
 ]
 
 MIDDLEWARE = [
@@ -90,5 +93,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'staticfiles'),
     os.path.join(BASE_DIR, 'staticfiles/admin/css'),
 ]
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'cookbook_project', 'images')
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
+    

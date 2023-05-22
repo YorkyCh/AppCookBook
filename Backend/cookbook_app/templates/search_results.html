@@ -1,12 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Search Results</h2>
-  <ul>
+<div class="main-block">
+  <form id="search-input" method="get" action="{% url 'recipe_search' %}">
+    <div class="search-form-elements">
+      <input type="search" class="form-control input-thick-border" id="test" placeholder="Search..." name="keyword" />
+      <input type="submit" value="Search" />
+    </div>
+    <div>
+      <h3>Categories:</h3>
+      
+      <div>
+        <input type="checkbox" name="category_filter" value="1" id="category_1">
+        <label for="category_1">Vegetarian</label>
+      </div>
+      
+      <div>
+        <input type="checkbox" name="category_filter" value="2" id="category_2">
+        <label for="category_2">Vegan</label>
+      </div>
+      
+      <div>
+        <input type="checkbox" name="category_filter" value="3" id="category_3">
+        <label for="category_3">Gluten-free</label>
+      </div>
+      
+      <div>
+        <input type="checkbox" name="category_filter" value="4" id="category_4">
+        <label for="category_4">Low-carb</label>
+      </div>
+      
+    </div>
+    <div>
+      <button type="submit">Apply Filters</button>
+    </div>
+  </form>
+  <div>
+    <h3>Results:</h3>
     {% for recipe in recipes %}
-      <li>
+      <div>
         <a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.name }}</a>
-      </li>
+      </div>
     {% endfor %}
-  </ul>
+</div>
+
+
 {% endblock %}

@@ -1,72 +1,83 @@
 {% extends 'base.html' %}
-{% load custom_tags %}
+{% load widget_tweaks %}
 {% block extra_head %}
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const addIngredientButton = document.getElementById("add-ingredient");
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+{{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="main-block">
+<h1>Edit Recipe</h1>
+<form method="post" enctype="multipart/form-data" action="{% url 'update_recipe' recipe.id %}">
+  {% csrf_token %}
+  {{ form.name.label_tag }} {{ form.name }}
+  {{ form.description.label_tag }} {{ form.description }}
+  {{ form.preparation_time.label_tag }} {{ form.preparation_time }}
+  {{ form.cook_time.label_tag }} {{ form.cook_time }}
+  {% if recipe.image %}
+  <img src="{{ recipe.image.url }}?{{ recipe.image.date_created|date:'U' }}" alt="Current Image">
+  {% endif %}
+  {{ form.image.label_tag }} {{ form.image }}
+  {{ form.spiciness.label_tag }} {{ form.spiciness }}
+  {{ form.steps.label_tag }} {{ form.steps }}
+  <h3>Ingredients:</h3>
+  {{ formset.management_form }}
+  <div id="ingredients-container">
+    {% for form in formset %}
+    <div class="ingredient-input">
+      {{ form.ingredient.label_tag }} {{ form.ingredient }}
+      {{ form.amount.label_tag }} {{ form.amount }}
+      {{ form.unit|add_class:"ingredient-select" }} <!-- Updated class attribute name -->
+    </div>
+    {% endfor %}
+  </div>
+  <button type="button" id="add-ingredient-btn">Add Ingredient</button>
+  <h3>Categories:</h3>
+  {% for category in categories %}
+  <div>
+    <input type="checkbox" name="categories" value="{{ category.pk }}" id="category_{{ category.pk }}"
+           {% if category in form.initial.categories.all %}checked{% endif %}>
+    <label for="category_{{ category.pk }}">{{ category.name }}</label>
+  </div>
+  {% endfor %}
+  <button type="submit">Update Recipe</button>
+</div>
+</form>
 
-      addIngredientButton.addEventListener("click", function() {
-        const ingredientsContainer = document.getElementById("ingredients-container");
+<script>
+  $(document).ready(function() {
+    var formCount = $('#id_ingredients-TOTAL_FORMS').val();
+    var ingredientForm = $('#ingredients-container').children('.ingredient-input').first().clone();
 
-        const formIdx = parseInt(document.getElementById('id_ingredients-TOTAL_FORMS').value);
-        ingredientsContainer.insertAdjacentHTML('beforeend', `
-          <div class="ingredient">
-            <div class="form-field">
-              <label for="id_ingredients-${formIdx}-ingredient">Ingredient:</label>
-              <select name="ingredients-${formIdx}-ingredient" id="id_ingredients-${formIdx}-ingredient">
-                <option value="">---------</option>
-                {% for ingredient in form.ingredient.field.queryset %}
-                  <option value="{{ ingredient.pk }}">{{ ingredient.name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="form-field">
-              <label for="id_ingredients-${formIdx}-amount">Amount:</label>
-              <input type="text" name="ingredients-${formIdx}-amount" id="id_ingredients-${formIdx}-amount" required>
-            </div>
-          </div>
-        `);
-        document.getElementById('id_ingredients-TOTAL_FORMS').value = formIdx + 1;
+    $('#add-ingredient-btn').click(function(e) {
+      e.preventDefault();
+      var newForm = ingredientForm.clone();
+      newForm.find('input, select').each(function() {
+        var name = $(this).attr('name').replace('-0-', '-' + formCount + '-');
+        var id = 'id_' + name;
+        $(this).attr({
+          'name': name,
+          'id': id
+        }).val('').removeAttr('checked');
+      });
+      $('#ingredients-container').append(newForm);
+      formCount++;
+      $('#id_ingredients-TOTAL_FORMS').val(formCount);
+
+      // Initialize Select2 for the newly added ingredient fields
+      newForm.find('.ingredient-select').select2({
+        width: 'resolve'
       });
     });
-  </script>
-{% endblock %}
 
+    // Initialize Select2 for the initial ingredient fields
+    $('.ingredient-select').select2({
+      width: 'resolve'
+    });
+  });
 
-{% block content %}
-  <h1>Edit Recipe</h1>
-  <form method="post" enctype="multipart/form-data" action="{% url 'update_recipe' recipe.id %}">
-    {% csrf_token %}
-    {{ form.name.label_tag }} {{ form.name }}
-    {{ form.description.label_tag }} {{ form.description }}
-    {{ form.preparation_time.label_tag }} {{ form.preparation_time }}
-    {{ form.cook_time.label_tag }} {{ form.cook_time }}
-    {{ form.image.label_tag }} {{ form.image }}
-    {{ form.spiciness.label_tag }} {{ form.spiciness }}
-    {{ form.steps.label_tag }} {{ form.steps }}
-    <h3>Ingredients:</h3>
-    {{ formset.management_form }}
-    <div id="ingredients-container">
-      {% for form in formset %}
-      <div class="ingredient">
-        {{ form.id.as_hidden }}
-        <div class="form-field">
-        {{ form.ingredient.label_tag }} {{ form.ingredient }}
-        </div>
-      <div class="form-field">
-        {{ form.amount.label_tag }} {{ form.amount }}
-      </div>
-    </div>
-    {% endfor %}
-    </div>
-    <button type="button" id="add-ingredient">Add Ingredient</button>
-    <h3>Categories:</h3>
-    {% for category in categories %}
-      <div>
-        <input type="checkbox" name="categories" value="{{ category.pk }}" id="category_{{ category.pk }}" {% if category in recipe.categories.all %}checked{% endif %}>
-        <label for="category_{{ category.pk }}">{{ category.name }}</label>
-      </div>
-    {% endfor %}
-    <button type="submit">Update Recipe</button>
-  </form>
+  // Reinitialize Select2 after the formset is submitted
+  $(document).on('submit', 'form', function() {
+    $('.ingredient-select').select2('destroy');
+  });
+</script>
 {% endblock %}

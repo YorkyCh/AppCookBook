@@ -1,17 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="main-block">
   <div class="search-container">
     <div class="search-box">
       <form id="search-input" method="get" action="{% url 'recipe_search' %}">
-        <input type="text" id="search-text" name="search-input" autocomplete="off" />
-        <select id="category-filter" name="category-filter">
-          <option value="">All categories</option>
-          {% for category in categories %}
-            <option value="{{ category.pk }}">{{ category.name }}</option>
-          {% endfor %}
-        </select>
-        <input type="submit" value="Search" style="margin-left: 190px; margin-bottom: 2px;" />
+        <div class="search-form-elements" style="align-items: center">
+          <input type="text" id="search-text" name="search-input" autocomplete="off" />
+          <select id="category-filter" name="category-filter">
+            <option value="">All categories</option>
+            {% for category in categories %}
+              <option value="{{ category.pk }}">{{ category.name }}</option>
+            {% endfor %}
+          </select>
+          <input type="submit" value="Search" />
+        </div>
       </form>
     </div>
-  {% endblock %}
+  </div>
+</div>
+{% endblock %}

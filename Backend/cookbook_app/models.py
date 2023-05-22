@@ -21,18 +21,15 @@ SPICINESS_CHOICES = (
     (5, 'Extremely Hot')
 )
 
-
 class Recipe(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     preparation_time = models.PositiveIntegerField()
-    category = models.CharField(max_length=200, default='Unknown')
+    categories = models.ManyToManyField(Category)  # Add a many-to-many relationship with Category
     cook_time = models.PositiveIntegerField(default=0)
-    image = models.ImageField(upload_to='images/', default='default_image.png')
+    image = models.ImageField(upload_to='', default='default_image.png')
     spiciness = models.IntegerField(choices=SPICINESS_CHOICES, default=1)
     steps = models.TextField(default='')
-    ingredients = models.ManyToManyField(Ingredient)
-    categories = models.ManyToManyField(Category)
 
     def __str__(self):
         return self.name
@@ -43,9 +40,10 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     amount = models.CharField(max_length=50)
+    unit = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"{self.recipe.name}: {self.amount} {self.ingredient.name}"
+        return f"{self.recipe.name}: {self.amount} {self.unit}"
 
 class MeasurementUnit(models.Model):
     name = models.CharField(max_length=100)
