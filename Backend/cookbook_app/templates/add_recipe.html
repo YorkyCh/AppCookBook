@@ -1,155 +1,31 @@
 {% extends 'base.html' %}
-{% load widget_tweaks static %}  <!-- Load the static tag here -->
+{% load widget_tweaks %}
 {% block extra_head %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 {{ block.super }}
 {% endblock %}
-{% block form_styles %}
-<style>
-  /* Add Mexican-inspired styles here */
-  header {
-    background-color: #d32f2f; /* Use a red color for the header */
-    padding: 10px;
-    position: sticky; /* Change position to sticky */
-    top: 0;
-    width: 100%;
-    z-index: 9999;
-  }
 
-  .form-container {
-    /* Existing styles */
-    padding: 20px;
-    margin: 70px auto; /* Adjust margin to create space below the header */
-    border-radius: 10px;
-    width: 80%;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    background-color: white;
-  }
-
-  .form-container h1 {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  .form-container form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .form-container label {
-    font-weight: bold;
-  }
-
-  .form-container input[type="text"],
-  .form-container textarea {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-  .form-container select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-  .form-container .ingredient-input {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .form-container .ingredient-input label {
-    flex-basis: 30%;
-    text-align: right;
-    margin-bottom: 0;
-  }
-
-  .form-container .ingredient-input .form-control {
-    flex-basis: 40%;
-  }
-
-  .form-container .ingredient-input .ingredient-select {
-    flex-basis: 30%;
-  }
-
-  .form-container button[type="submit"] {
-    background-color: #4caf50;
-    border: none;
-    color: white;
-    padding: 10px 24px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .form-container button[type="submit"]:hover {
-    background-color: #3e8e41;
-  }
-  #search-input input[type="search"] {
-      border-radius: 50px;
-      padding: 8px 16px;
-      border: none;
-      font-size: 16px;
-    }
-    
-    #search-input input[type="submit"] {
-      background-color: #d32f2f; /* Use the same red color as the header */
-      border: none;
-      color: white;
-      padding: 8px 16px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    
-    #search-input input[type="submit"]:hover {
-      background-color: #b71c1c; /* Darken the red color on hover */
-    }
-   /* Additional styles for the search bar and button */
-    #search-input input[type="search"] {
-      background-color: #d32f2f; /* Use the same red color as the header */
-      color: white;
-    }
-
-    #search-input input[type="submit"] {
-      background-color: #d32f2f; /* Use the same red color as the header */
-    }
-
-    #search-input input[type="search"]::placeholder {
-    color: white;
-  }
-  
-
-
-  
-</style>
-{% endblock %}
 {% block content %}
-<div style="
-background-image: url('{% static "admin/img/Background.jpg" %}');
-background-repeat: no-repeat;
-background-size: cover;
-min-height: 100vh;
-display: flex;
-justify-content: center;
-align-items: center;
-">
-<div class="form-container">
+<header>
+  <nav>
+    <div class="navbar-left">
+      <h1><a href="{% url 'index' %}">Cookbook App</a></h1>
+    </div>
+    <div class="navbar-right">
+      <div>
+        <form id="search-input" method="get" action="{% url 'recipe_search' %}">
+          <div class="search-form-elements">
+            <input type="search" class="form-control input-thick-border" id="test" placeholder="Search..." name="keyword" />
+          </div>
+        </form>
+      </div>
+      <div class="">
+        <a href="{% url 'add_recipe' %}">Add Recipe</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="main-block" style="margin-top: 190px;">
   <h1>Add Recipe</h1>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -163,11 +39,7 @@ align-items: center;
     </div>
     <div>
       <label for="{{ form.preparation_time.id_for_label }}">Preparation Time:</label>
-      {{ form.preparation_time }}
-    </div>
-    <div>
-      <label for="{{ form.cook_time.id_for_label }}">Cook Time:</label>
-      {{ form.cook_time }}
+      {{ form.preparation_time }} minutes
     </div>
     <div>
       <label for="{{ form.image.id_for_label }}">Image:</label>
@@ -186,24 +58,15 @@ align-items: center;
     <div id="ingredients-container">
       {% for form in formset %}
       <div class="ingredient-input">
-        <label for="{{ form.ingredient.id_for_label }}">Ingredient:</label>
-        {{ form.ingredient }}
-        <input type="text" class="form-control" id="{{ form.amount.id_for_label }}" name="{{ form.amount.name }}" value="{% if form.amount.value %}{{ form.amount.value }}{% endif %}" />
-        {{ form.unit|add_class:"ingredient-select" }}
+        {{ form.ingredient.label_tag }} {{ form.ingredient }}
+        {{ form.amount.label_tag }} {{ form.amount }}
+        {{ form.unit|add_class:"ingredient-select" }} <!-- Updated class attribute name -->
       </div>
       {% endfor %}
     </div>
     <button type="button" id="add-ingredient-btn">Add Ingredient</button>
-    <h3>Categories:</h3>
-    {% for category in categories %}
-    <div>
-      <input type="checkbox" name="categories" value="{{ category.pk }}" id="category_{{ category.pk }}">
-      <label for="category_{{ category.pk }}">{{ category.name }}</label>
-    </div>
-    {% endfor %}
     <button type="submit">Create Recipe</button>
   </form>
-</div>
 </div>
 
 <script>

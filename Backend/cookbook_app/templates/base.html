@@ -26,12 +26,14 @@
     
       body {
         font-family: 'Alegreya', serif;
-        background-image: url('{% static "admin/img/Background.jpg" %}'), url('{% static "admin/img/MexicanPattern.jpg" %}');
+        background-image: url('{% static "admin/img/Background4.webp" %}');
         background-blend-mode: overlay; /* Blend the two backgrounds together */
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
+        z-index: -1;
+
       }
     
       header {
@@ -41,15 +43,23 @@
         top: 0;
         width: 100%;
         z-index: 9999;
-        box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.2); /* Added box-shadow */
+        box-shadow: 0px 2px 15px rgba(243, 227, 2, 0.2); /* Added box-shadow */
       }
-    
+
+   
       nav {
         background-image: url('{% static "admin/img/navbarBackground.webp" %}');
         background-size: cover;
         background-position: center 45%; /* Moved the background image down */
         background-repeat: no-repeat;
         background-color: rgba(255, 255, 255, 0.8); /* Added semi-transparent background */
+        box-shadow: 0 0 10px #fdd835; /* Adjust these values to change the shadow's appearance */
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
       }
     
       .navbar-left a {
@@ -68,19 +78,30 @@
       }
     
       .navbar-right a {
-        color: #fdd835; /* Bright yellow for links */
+        color:#fdd835; /* Bright yellow for links */
+        text-decoration: none;
+        margin-right: 40px;
+        font-size: 18px;
+        font-weight: 600; /* Slightly increased the font size and weight */
+        padding: 10px 20px;
+        border-radius: 10px;
+        background-color:#ff6f00; /* Deep orange for links */
+        height: 70px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+        border: 2px solid #fdd835; /* Bright yellow border for links */
+      }
+    
+      .search_dropdown {
+        background-color: #fdd835; /* Bright yellow for buttons */
+        color: #ff6f00; /* Deep orange for button text */
         text-decoration: none;
         margin-right: 20px;
         font-size: 18px;
         font-weight: 600; /* Slightly increased the font size and weight */
         padding: 10px 20px;
         border-radius: 10px;
-      }
-    
-      .navbar-right .dropdown .dropbtn {
-        background-color: #fdd835; /* Bright yellow for buttons */
-        color: #ff6f00; /* Deep orange for button text */
-        
       }
 
     .navbar-right .dropdown {
@@ -146,12 +167,26 @@
     }
 
     .wide-textarea {
-    width: 230%;
+    width: 100%;
 }
 
     #search-input input[type="search"]::placeholder {
       color: white;
+      font-family: 'Alegreya', serif;
+
     }
+
+    #category-filter {
+        background-color: #ff6f00; /* Bright yellow for buttons */
+        color: #fdd835; /* Deep orange for button text */
+        margin-right: 20px;
+        font-size: 18px;
+        font-weight: 600; /* Slightly increased the font size and weight */
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-family: 'Alegreya', serif;
+      }
+
     </style>
     {% endblock %}
     {% block styles %}{% endblock %}
@@ -163,24 +198,16 @@
           <h1><a href="{% url 'index' %}">Cookbook App</a></h1>
         </div>
         <div class="navbar-right">
-          <a href="{% url 'index' %}">Home</a>
-          <div class="dropdown">
-            <button class="dropbtn">Category</button>
-            <div class="dropdown-content">
-              <a href="{% url 'recipe_list' %}">Link 1</a>
-              <a href="#">Link 2</a>
-              <a href="#">Link 3</a>
-            </div>
-          </div>
           <div>
             <form id="search-input" method="get" action="{% url 'recipe_search' %}">
               <div class="search-form-elements">
                 <input type="search" class="form-control input-thick-border" id="test" placeholder="Search..." name="keyword" />
-                <input type="submit" value="Search" />
               </div>
             </form>
           </div>
+          <div class="">
           <a href="{% url 'add_recipe' %}">Add Recipe</a>
+          </div>
         </div>
       </nav>
     </header>
