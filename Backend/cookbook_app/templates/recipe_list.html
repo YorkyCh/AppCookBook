@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header>
+  <nav>
+    <div class="navbar-left">
+      <h1><a href="{% url 'index' %}">Cookbook App</a></h1>
+    </div>
+    <div class="navbar-right">
+      <div>
+        <form id="search-input" method="get" action="{% url 'recipe_search' %}">
+          <div class="search-form-elements">
+            <input type="search" class="form-control input-thick-border" id="test" placeholder="Search..." name="keyword" />
+          </div>
+        </form>
+      </div>
+      <div class="">
+        <a href="{% url 'add_recipe' %}">Add Recipe</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<h1>Recipe List</h1>
+{% for recipe in recipes %}
+<div class="main-block" style="margin-top: 120px;">
+  <div class="recipe-card" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+    <h2><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.name }}</a></h2>
+    <img src="{{ recipe.image.url }}" alt="{{ recipe.name }} image" class="recipe-image" style="width: 100%; max-height: 300px; object-fit: cover;">
+    <ul>
+      <li><strong>Categories:</strong>
+        {% for category in recipe.categories.all %}
+          {{ category.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </li>
+      <li><strong>Cook Time:</strong> {{ recipe.cook_time }} minutes</li>
+      <li><strong>Spiciness:</strong> {{ recipe.spiciness }}</li>
+    </ul>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

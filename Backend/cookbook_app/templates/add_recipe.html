@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block extra_head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<header>
+  <nav>
+    <div class="navbar-left">
+      <h1><a href="{% url 'index' %}">Cookbook App</a></h1>
+    </div>
+    <div class="navbar-right">
+      <div>
+        <form id="search-input" method="get" action="{% url 'recipe_search' %}">
+          <div class="search-form-elements">
+            <input type="search" class="form-control input-thick-border" id="test" placeholder="Search..." name="keyword" />
+          </div>
+        </form>
+      </div>
+      <div class="">
+        <a href="{% url 'add_recipe' %}">Add Recipe</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="main-block" style="margin-top: 190px;">
+  <h1>Add Recipe</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div>
+      <label for="{{ form.name.id_for_label }}">Name:</label>
+      {{ form.name }}
+    </div>
+    <div>
+      <label for="{{ form.description.id_for_label }}">Description:</label>
+      {{ form.description }}
+    </div>
+    <div>
+      <label for="{{ form.preparation_time.id_for_label }}">Preparation Time:</label>
+      {{ form.preparation_time }} minutes
+    </div>
+    <div>
+      <label for="{{ form.image.id_for_label }}">Image:</label>
+      {{ form.image }}
+    </div>
+    <div>
+      <label for="{{ form.spiciness.id_for_label }}">Spiciness:</label>
+      {{ form.spiciness }}
+    </div>
+    <div>
+      <label for="{{ form.steps.id_for_label }}">Steps:</label>
+      {{ form.steps }}
+    </div>
+    <h3>Ingredients:</h3>
+    {{ formset.management_form }}
+    <div id="ingredients-container">
+      {% for form in formset %}
+      <div class="ingredient-input">
+        {{ form.ingredient.label_tag }} {{ form.ingredient }}
+        {{ form.amount.label_tag }} {{ form.amount }}
+        {{ form.unit|add_class:"ingredient-select" }} <!-- Updated class attribute name -->
+      </div>
+      {% endfor %}
+    </div>
+    <button type="button" id="add-ingredient-btn">Add Ingredient</button>
+    <button type="submit">Create Recipe</button>
+  </form>
+</div>
+
+<script>
+  $(document).ready(function() {
+    var formCount = $('#id_ingredients-TOTAL_FORMS').val();
+    var ingredientForm = $('#ingredients-container').children('.ingredient-input').first().clone();
+
+    $('#add-ingredient-btn').click(function(e) {
+      e.preventDefault();
+      var newForm = ingredientForm.clone();
+      newForm.find('input, select').each(function() {
+        var name = $(this).attr('name').replace('-0-', '-' + formCount + '-');
+        var id = 'id_' + name;
+        $(this).attr({
+          'name': name,
+          'id': id
+        }).val('').removeAttr('checked');
+      });
+      $('#ingredients-container').append(newForm);
+      formCount++;
+      $('#id_ingredients-TOTAL_FORMS').val(formCount);
+
+      // Initialize Select2 for the newly added ingredient fields
+      newForm.find('.ingredient-select').select2({
+        width: 'resolve'
+      });
+    });
+
+    // Initialize Select2 for the initial ingredient fields
+    $('.ingredient-select').select2({
+      width: 'resolve'
+    });
+  });
+
+  // Reinitialize Select2 after the formset is submitted
+  $(document).on('submit', 'form', function() {
+    $('.ingredient-select').select2('destroy');
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,8 @@
+asgiref==3.4.1
+Django==3.2.18
+mysqlclient==2.1.1
+Pillow==8.4.0
+pytz==2023.3
+six==1.16.0
+sqlparse==0.4.4
+typing_extensions==4.1.1

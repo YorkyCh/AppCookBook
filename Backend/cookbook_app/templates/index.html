@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main-block" style="margin-top: 500px; width: 500px;">
+  <div class="search-container" style="height: 120px; width: 120px align-items: center; margin-right: 20px;">
+    <div style="display: flex; flex-direction: column; align-items: center; padding: 20px;border: none;" class="search-box">
+      <form id="search-input" method="get" action="{% url 'recipe_search' %}">
+        <div class="search-form-elements" style="align-items: center">
+          <input type="text" id="search-text" name="search-input" autocomplete="off" style="align-items: center; width: 100%; margin: 10px; font-size: 16px; border: none; border-bottom: 2px solid #ccc;"/>
+          <div style="margin-left: 60px;">
+          <select id="category-filter" name="category-filter">
+            <option value="">All categories</option>
+            {% for category in categories %}
+              <option value="{{ category.pk }}">{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div style="margin-left: 100px; margin-top: 5px;">
+          <input type="submit" value="Search" style="background-color: #ff6f00; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;"/>
+        </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

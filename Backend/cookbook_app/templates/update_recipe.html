@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block extra_head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="main-block" style="margin-top: 190px;">
+  <h1>Edit Recipe</h1>
+  <form method="post" enctype="multipart/form-data" action="{% url 'update_recipe' recipe.id %}">
+    {% csrf_token %}
+    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+      <div>
+        <div style="margin-bottom: 10px;">
+            <div>{{ form.name.label_tag }}</div>
+            <div style="margin-left: 15px">{{ form.name }}</div>
+        </div>
+        
+        <div style="margin-bottom: 10px;">
+          <div>{{ form.preparation_time.label_tag }}</div>
+          <div style="margin-left: 15px">{{ form.preparation_time }}</div>
+        </div>
+          
+        <div style="margin-bottom: 10px">
+          <div>{{ form.spiciness.label_tag }}</div>
+          <div style="margin-left: 15px">{{ form.spiciness }}</div>
+        </div>
+        <div style="margin-bottom: 50px">
+            <h3>Categories:</h3>
+    {% for category in categories %}
+    <div>
+      <input type="checkbox" name="categories" value="{{ category.pk }}" id="category_{{ category.pk }}"
+             {% if category in form.initial.categories.all %}checked{% endif %}>
+      <label for="category_{{ category.pk }}">{{ category.name }}</label>
+    </div>
+    {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        {% if recipe.image %}
+        <img src="{{ recipe.image.url }}?{{ recipe.image.date_created|date:'U' }}" style="width: 530px; height: 300px; margin-left: 50px;" alt="Current Image">
+        {% endif %}
+        <div style="margin-left: 200px;">
+          {{ form.image.label_tag }}
+          <input type="file" name="{{ form.image.name }}" accept="image/*" id="{{ form.image.id_for_label }}">
+          <label for="{{ form.image.id_for_label }}"></label>
+        </div>
+      </div>
+    </div>
+      
+        
+
+    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+        
+        <div>
+                <div style="margin-left: 10px;">
+                  {{ form.description }}
+                </div>
+        </div>
+    </div>
+
+
+<div>
+    <h3>Ingredients:</h3>
+    {{ formset.management_form }}
+    <div id="ingredients-container">
+      {% for form in formset %}
+      <div class="ingredient-input">
+        {{ form.ingredient.label_tag }} {{ form.ingredient }}
+        {{ form.amount.label_tag }} {{ form.amount }}
+        {{ form.unit|add_class:"ingredient-select" }} <!-- Updated class attribute name -->
+      </div>
+      {% endfor %}
+    </div>
+    <button type="button" id="add-ingredient-btn">Add Ingredient</button>
+    <button type="submit">Update Recipe</button>
+</div>
+
+</div>
+
+<script>
+  $(document).ready(function() {
+    var formCount = $('#id_ingredients-TOTAL_FORMS').val();
+    var ingredientForm = $('#ingredients-container').children('.ingredient-input').first().clone();
+
+    $('#add-ingredient-btn').click(function(e) {
+      e.preventDefault();
+      var newForm = ingredientForm.clone();
+      newForm.find('input, select').each(function() {
+        var name = $(this).attr('name').replace('-0-', '-' + formCount + '-');
+        var id = 'id_' + name;
+        $(this).attr({
+          'name': name,
+          'id': id
+        }).val('').removeAttr('checked');
+      });
+      $('#ingredients-container').append(newForm);
+      formCount++;
+      $('#id_ingredients-TOTAL_FORMS').val(formCount);
+
+      // Initialize Select2 for the newly added ingredient fields
+      newForm.find('.ingredient-select').select2({
+        width: 'resolve'
+      });
+    });
+
+    // Initialize Select2 for the initial ingredient fields
+    $('.ingredient-select').select2({
+      width: 'resolve'
+    });
+  });
+
+  // Reinitialize Select2 after the formset is submitted
+  $(document).on('submit', 'form', function() {
+    $('.ingredient-select').select2('destroy');
+  });
+</script>
+{% endblock %}
