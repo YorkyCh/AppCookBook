@@ -4,44 +4,81 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 {{ block.super }}
 {% endblock %}
+
 {% block content %}
-<div class="main-block">
-<h1>Edit Recipe</h1>
-<form method="post" enctype="multipart/form-data" action="{% url 'update_recipe' recipe.id %}">
-  {% csrf_token %}
-  {{ form.name.label_tag }} {{ form.name }}
-  {{ form.description.label_tag }} {{ form.description }}
-  {{ form.preparation_time.label_tag }} {{ form.preparation_time }}
-  {{ form.cook_time.label_tag }} {{ form.cook_time }}
-  {% if recipe.image %}
-  <img src="{{ recipe.image.url }}?{{ recipe.image.date_created|date:'U' }}" alt="Current Image">
-  {% endif %}
-  {{ form.image.label_tag }} {{ form.image }}
-  {{ form.spiciness.label_tag }} {{ form.spiciness }}
-  {{ form.steps.label_tag }} {{ form.steps }}
-  <h3>Ingredients:</h3>
-  {{ formset.management_form }}
-  <div id="ingredients-container">
-    {% for form in formset %}
-    <div class="ingredient-input">
-      {{ form.ingredient.label_tag }} {{ form.ingredient }}
-      {{ form.amount.label_tag }} {{ form.amount }}
-      {{ form.unit|add_class:"ingredient-select" }} <!-- Updated class attribute name -->
+<div class="main-block" style="margin-top: 190px;">
+  <h1>Edit Recipe</h1>
+  <form method="post" enctype="multipart/form-data" action="{% url 'update_recipe' recipe.id %}">
+    {% csrf_token %}
+    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+      <div>
+        <div style="margin-bottom: 10px;">
+            <div>{{ form.name.label_tag }}</div>
+            <div style="margin-left: 15px">{{ form.name }}</div>
+        </div>
+        
+        <div style="margin-bottom: 10px;">
+          <div>{{ form.preparation_time.label_tag }}</div>
+          <div style="margin-left: 15px">{{ form.preparation_time }}</div>
+        </div>
+          
+        <div style="margin-bottom: 10px">
+          <div>{{ form.spiciness.label_tag }}</div>
+          <div style="margin-left: 15px">{{ form.spiciness }}</div>
+        </div>
+        <div style="margin-bottom: 50px">
+            <h3>Categories:</h3>
+    {% for category in categories %}
+    <div>
+      <input type="checkbox" name="categories" value="{{ category.pk }}" id="category_{{ category.pk }}"
+             {% if category in form.initial.categories.all %}checked{% endif %}>
+      <label for="category_{{ category.pk }}">{{ category.name }}</label>
     </div>
     {% endfor %}
-  </div>
-  <button type="button" id="add-ingredient-btn">Add Ingredient</button>
-  <h3>Categories:</h3>
-  {% for category in categories %}
-  <div>
-    <input type="checkbox" name="categories" value="{{ category.pk }}" id="category_{{ category.pk }}"
-           {% if category in form.initial.categories.all %}checked{% endif %}>
-    <label for="category_{{ category.pk }}">{{ category.name }}</label>
-  </div>
-  {% endfor %}
-  <button type="submit">Update Recipe</button>
+        </div>
+      </div>
+
+      <div>
+        {% if recipe.image %}
+        <img src="{{ recipe.image.url }}?{{ recipe.image.date_created|date:'U' }}" style="width: 530px; height: 300px; margin-left: 50px;" alt="Current Image">
+        {% endif %}
+        <div style="margin-left: 200px;">
+          {{ form.image.label_tag }}
+          <input type="file" name="{{ form.image.name }}" accept="image/*" id="{{ form.image.id_for_label }}">
+          <label for="{{ form.image.id_for_label }}"></label>
+        </div>
+      </div>
+    </div>
+      
+        
+
+    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+        
+        <div>
+                <div style="margin-left: 10px;">
+                  {{ form.description }}
+                </div>
+        </div>
+    </div>
+
+
+<div>
+    <h3>Ingredients:</h3>
+    {{ formset.management_form }}
+    <div id="ingredients-container">
+      {% for form in formset %}
+      <div class="ingredient-input">
+        {{ form.ingredient.label_tag }} {{ form.ingredient }}
+        {{ form.amount.label_tag }} {{ form.amount }}
+        {{ form.unit|add_class:"ingredient-select" }} <!-- Updated class attribute name -->
+      </div>
+      {% endfor %}
+    </div>
+    <button type="button" id="add-ingredient-btn">Add Ingredient</button>
+    <button type="submit">Update Recipe</button>
 </div>
-</form>
+
+</div>
 
 <script>
   $(document).ready(function() {

@@ -115,14 +115,10 @@ def index(request):
 
 def recipe_search(request):
     search_input = request.GET.get('keyword', '')
-    print("Search query:", search_input)
-
     category_filter = request.GET.getlist('category_filter')
 
     # Filter recipes by name and description
     recipes = Recipe.objects.filter(Q(name__icontains=search_input) | Q(description__icontains=search_input))
-    print("Filtered recipes:", recipes)
-
     if category_filter:
         recipes = recipes.filter(categories__in=category_filter)
 
