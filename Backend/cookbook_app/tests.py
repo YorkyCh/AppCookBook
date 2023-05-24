@@ -9,7 +9,7 @@ from django.core.files.base import ContentFile
 
 class RecipeModelTestCase(TestCase):
     def setUp(self):
-        self.measurement_unit = MeasurementUnit.objects.create(name='Cup', conversion_rate=1)
+        self.measurement_unit = MeasurementUnit.objects.create(name='Cup')
         self.ingredient = Ingredient.objects.create(name="Test Ingredient")
         self.recipe = Recipe.objects.create(
             name='Test Recipe',
@@ -17,7 +17,9 @@ class RecipeModelTestCase(TestCase):
             description='Test description',
             spiciness=2,
             steps="1. Step one\n2. Step two",
-            image=SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
+            image=SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg'),
+            portion_size=2,
+            base_portion_size=2,
         )
         self.recipe_ingredient = RecipeIngredient.objects.create(
             recipe=self.recipe,
@@ -70,6 +72,14 @@ class RecipeModelTestCase(TestCase):
         expected_image = 'test_image.jpg'
         self.assertTrue(recipe.image.name.startswith('test_image'))
 
+    def test_recipe_portion_size(self):
+        recipe = Recipe.objects.get(id=self.recipe.id)
+        self.assertEqual(recipe.portion_size, 2)
+
+    def test_recipe_base_portion_size(self):
+        recipe = Recipe.objects.get(id=self.recipe.id)
+        self.assertEqual(recipe.base_portion_size, 2)
+
 
 class RecipeFormTestCase(TestCase):
     def setUp(self):
@@ -91,11 +101,11 @@ class RecipeFormTestCase(TestCase):
                 'spiciness': 2,
                 'steps': '1. Step one\n2. Step two',
                 'categories': [self.category.id],
+                'portion_size': 2,
+                'base_portion_size': 2,
             },
             files={'image': image}
         )
-
-
         self.assertTrue(form.is_valid())
 
     def test_blank_data(self):
@@ -110,6 +120,8 @@ class RecipeFormTestCase(TestCase):
             'spiciness': ['This field is required.'],
             'steps': ['This field is required.'],
             'image': ['This field is required.'],
+            'portion_size': ['This field is required.'],
+            'base_portion_size': ['This field is required.'],
         })
 
 
@@ -132,18 +144,21 @@ class RecipeViewTestCase(TestCase):
             preparation_time=30,
             spiciness=2,
             steps='1. Step one\n2. Step two',
-            image=self.image  # use the image created above
+            image=self.image,
+            portion_size=2,
+            base_portion_size=2,  # use the image created above
         )
         self.recipe.categories.set([self.category])
 
     def test_add_recipe_view(self):
         url = reverse('add_recipe')
+        image = SimpleUploadedFile(name='test_image.jpg', content=open('test_image.jpg', 'rb').read(), content_type='image/jpeg')
 
         # Test GET request
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'add_recipe.html')  # assuming that 'add_recipe.html' is the correct template
-        self.assertIsInstance(response.context['form'], RecipeForm)  # check that a RecipeForm instance is passed to the template
+        self.assertTemplateUsed(response, 'add_recipe.html')
+        self.assertIsInstance(response.context['form'], RecipeForm)
 
         # Test POST request
         post_data = {
@@ -152,11 +167,66 @@ class RecipeViewTestCase(TestCase):
             'preparation_time': 30,
             'spiciness': 2,
             'steps': '1. Step one\n2. Step two',
-            'categories': [self.category.id]
+            'categories': [self.category.id],
+            'portion_size': 2,
+            'base_portion_size': 2,
+            'image': image,
         }
         response = self.client.post(url, data=post_data, follow=True)
         self.assertEqual(response.status_code, 200)  # should redirect after successful form submission
         self.assertTrue(Recipe.objects.filter(name='Test Recipe').exists())  # check that the recipe was added to the database
+
+    def test_update_recipe_view(self):
+        url = reverse('update_recipe', args=[self.recipe.id])
+
+        # Test GET request
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'update_recipe.html')
+        self.assertIsInstance(response.context['form'], RecipeForm)
+
+        # Test POST request
+        post_data = {
+            'name': 'Updated Test Recipe',
+            'description': 'Updated Test description',
+            'preparation_time': 40,
+            'spiciness': 3,
+            'steps': '1. Updated Step one\n2. Updated Step two',
+            'categories': [self.category.id],
+            'portion_size': 3,
+            'base_portion_size': 3,
+        }
+        response = self.client.post(url, data=post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.recipe.refresh_from_db()  # refresh the recipe instance to pull the updated data
+        self.assertEqual(self.recipe.name, 'Updated Test Recipe')  # check that the recipe was updated in the database
+
+    def test_delete_recipe_view(self):
+        url = reverse('delete_recipe', args=[self.recipe.id])
+
+        # Test GET request
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)  # should redirect after deleting the recipe
+        self.assertFalse(Recipe.objects.filter(id=self.recipe.id).exists())  # check that the recipe was deleted from the database
+
+    def test_recipe_detail_view(self):
+        url = reverse('recipe_detail', args=[self.recipe.id])
+
+        # Test GET request
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'recipe_detail.html')
+        self.assertEqual(response.context['recipe'], self.recipe)  # check that the correct recipe instance is passed to the template
+
+        # Test POST request
+        post_data = {
+            'portion_size': 2
+        }
+        response = self.client.post(url, data=post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.recipe.refresh_from_db()  # refresh the recipe instance to pull the updated data
+        self.assertEqual(self.recipe.portion_size, 2)  # check that the recipe's portion_size was updated in the database
+
 
 class RecipeImageTestCase(TestCase):
     def setUp(self):

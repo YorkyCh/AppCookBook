@@ -1,107 +1,83 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    {% block extra_head %}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-    {% endblock %}
-    <title>{% block title %}{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'admin/css/mainPage.css' %}" />
+<head>
+  <meta charset="UTF-8" />
+  {% block extra_head %}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+  {% endblock %}
+  <title>{% block title %}{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'admin/css/mainPage.css' %}" />
 
-    <!-- Include jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Include jQuery UI -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <!-- Include Select2 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    {% block form_styles %}
-    <style>
-      /* Add Mexican-inspired styles here */
-      /* Add Google Font */
-      @import url('https://fonts.googleapis.com/css2?family=Alegreya&display=swap');
-    
-      body {
-        font-family: 'Alegreya', serif;
-        background-image: url('{% static "admin/img/Background4.webp" %}');
-        background-blend-mode: overlay; /* Blend the two backgrounds together */
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        z-index: -1;
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include jQuery UI -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <!-- Include Select2 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
-      }
-    
-      header {
-        background-color: #ff6f00; /* Deep orange color for header */
-        padding: 20px;
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 9999;
-        box-shadow: 0px 2px 15px rgba(243, 227, 2, 0.2); /* Added box-shadow */
-      }
+  {% block form_styles %}
+  <style>
+    /* Add Mexican-inspired styles here */
+    /* Add Google Font */
+    @import url('https://fonts.googleapis.com/css2?family=Alegreya&display=swap');
 
-   
-      nav {
-        background-image: url('{% static "admin/img/navbarBackground.webp" %}');
-        background-size: cover;
-        background-position: center 45%; /* Moved the background image down */
-        background-repeat: no-repeat;
-        background-color: rgba(255, 255, 255, 0.8); /* Added semi-transparent background */
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Adjust these values to change the shadow's appearance */
-        border-radius: 10px;
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    body {
+      font-family: 'Alegreya', serif;
+      background-image: url('{% static "admin/img/Background4.webp" %}');
+      background-blend-mode: overlay;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      z-index: -1;
+    }
 
-      }
-    
-      .navbar-left a {
-        color: #fdd835; /* Bright yellow for links */
-        text-decoration: none;
-        font-size: 28px;
-        font-weight: 700; /* Made the main title more prominent */
-        background-color: #ff6f00;
-        padding: 10px 20px;
-        border-radius: 10px;
-      }
-    
-      .navbar-right {
-        display: flex;
-        align-items: center;
-      }
-    
-      .navbar-right a {
-        color:#fdd835; /* Bright yellow for links */
-        text-decoration: none;
-        margin-right: 40px;
-        font-size: 18px;
-        font-weight: 600; /* Slightly increased the font size and weight */
-        padding: 10px 20px;
-        border-radius: 10px;
-        background-color:#ff6f00; /* Deep orange for links */
-        height: 70px;
-        display: flex;
-        align-items: center;
-        box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
-        border: 2px solid #fdd835; /* Bright yellow border for links */
-      }
-    
-      .search_dropdown {
-        background-color: #fdd835; /* Bright yellow for buttons */
-        color: #ff6f00; /* Deep orange for button text */
-        text-decoration: none;
-        margin-right: 20px;
-        font-size: 18px;
-        font-weight: 600; /* Slightly increased the font size and weight */
-        padding: 10px 20px;
-        border-radius: 10px;
-      }
+    header {
+      background-color: #000000;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 9999;
+      box-shadow: 0px 2px 15px rgba(255, 81, 0, 0.911);
+    }
+
+    nav {
+      background-color: #ff6f00;
+      background-image: linear-gradient(to bottom, #ff6f00, #d84315);
+      color: white;
+      background-size: cover;
+      background-position: center 45%;
+      background-repeat: no-repeat;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar-left a,
+    .navbar-right a,
+    .search_dropdown {
+      color: white;
+      text-decoration: none;
+      font-size: 28px;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 10px;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+    }
 
     .navbar-right .dropdown {
       position: relative;
@@ -127,32 +103,34 @@
       display: block;
     }
 
-    #search-input input[type="search"] {
+    #search-input input[type="search"],
+    #search-input input[type="submit"] {
       border-radius: 50px;
+      font-size: 16px;
+    }
+
+    #search-input input[type="search"] {
       padding: 8px 16px;
       border: none;
-      font-size: 16px;
-      background-color: #ff6f00; /* Deep orange for search bar */
+      background-color: #ff6f00;
       color: white;
     }
 
-    #search-input input```html
-[type="submit"] {
-      background-color: #ff6f00; /* Deep orange for submit button */
+    #search-input input[type="submit"] {
+      background-color: #ff6f00;
       border: none;
       color: white;
       padding: 8px 16px;
       text-align: center;
       text-decoration: none;
       display: inline-block;
-      font-size: 16px;
       border-radius: 10px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
     #search-input input[type="submit"]:hover {
-      background-color: #d84315; /* Darken the orange color on hover */
+      background-color: #d84315;
     }
 
     .main-block {
@@ -162,57 +140,55 @@
       border-radius: 10px;
       max-width: 800px;
       box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
-      border: 2px solid #ff6f00; /* Deep orange border for the main block */
-      margin-top: 200px;
+      border: 2px solid #ff6f00;
     }
 
     .wide-textarea {
-    width: 100%;
-}
+      width: 100%;
+    }
 
     #search-input input[type="search"]::placeholder {
       color: white;
       font-family: 'Alegreya', serif;
-
     }
 
     #category-filter {
-        background-color: #ff6f00; /* Bright yellow for buttons */
-        color: #fdd835; /* Deep orange for button text */
-        margin-right: 20px;
-        font-size: 18px;
-        font-weight: 600; /* Slightly increased the font size and weight */
-        padding: 10px 20px;
-        border-radius: 10px;
-        font-family: 'Alegreya', serif;
-      }
-
-    </style>
-    {% endblock %}
-    {% block styles %}{% endblock %}
-  </head>
-  <body>
-    <header>
-      <nav>
-        <div class="navbar-left">
-          <h1><a href="{% url 'index' %}">Cookbook App</a></h1>
+      background-color: #ff6f00;
+      color: white;
+      margin-right: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-family: 'Alegreya', serif;
+    }
+  </style>
+  {% endblock %}
+  {% block styles %}{% endblock %}
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="navbar-left">
+        <h1><a href="{% url 'index' %}">Pollo Cookbook</a></h1>
+        <h1><a href="{% url 'recipe_list' %}">List</a></h1>
+      </div>
+      <div class="navbar-right">
+        <div>
+          <form id="search-input" method="get" action="{% url 'recipe_search' %}">
+            <div class="search-form-elements">
+              <input type="search" class="form-control input-thick-border" id="test" placeholder="Search..." name="keyword" />
+            </div>
+          </form>
         </div>
-        <div class="navbar-right">
-          <div>
-            <form id="search-input" method="get" action="{% url 'recipe_search' %}">
-              <div class="search-form-elements">
-                <input type="search" class="form-control input-thick-border" id="test" placeholder="Search..." name="keyword" />
-              </div>
-            </form>
-          </div>
-          <div class="">
-          <a href="{% url 'add_recipe' %}">Add Recipe</a>
-          </div>
+        <div class="">
+          <h1><a href="{% url 'add_recipe' %}">add recipe</a></h1>
         </div>
-      </nav>
-    </header>
-    <main>
-      {% block content %}{% endblock %}
-    </main>
-  </body>
+      </div>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
 </html>

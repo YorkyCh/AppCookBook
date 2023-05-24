@@ -6,7 +6,7 @@
     <div style="display: flex; flex-direction: column; align-items: center; padding: 20px;border: none;" class="search-box">
       <form id="search-input" method="get" action="{% url 'recipe_search' %}">
         <div class="search-form-elements" style="align-items: center">
-          <input type="text" id="search-text" name="search-input" autocomplete="off" style="align-items: center; width: 100%; margin: 10px; font-size: 16px; border: none; border-bottom: 2px solid #ccc;"/>
+          <input type="text" id="search-text" name="keyword" autocomplete="off" style="align-items: center; width: 100%; margin: 10px; font-size: 16px; border: none; border-bottom: 2px solid #ccc;"/>
           <div style="margin-left: 60px;">
           <select id="category-filter" name="category-filter">
             <option value="">All categories</option>
@@ -20,7 +20,36 @@
         </div>
         </div>
       </form>
+      <form id="search-input-all" method="get" action="{% url 'recipe_search' %}">
+        <input type="hidden" name="keyword" value="">
+        <input type="hidden" name="category-filter" value="">
+      </form>
     </div>
   </div>
 </div>
+
+<script>
+  // Function to submit the search form with category filter
+  function submitFormWithCategoryFilter() {
+    var searchForm = document.getElementById("search-input");
+    var categoryFilter = document.getElementById("category-filter");
+    var keyword = document.getElementById("search-text").value;
+    var categoryValue = categoryFilter.options[categoryFilter.selectedIndex].value;
+    
+    // Set the hidden fields values in the second form
+    var searchFormAll = document.getElementById("search-input-all");
+    searchFormAll.elements["keyword"].value = keyword;
+    searchFormAll.elements["category-filter"].value = categoryValue;
+
+    // Submit the form with the category filter
+    searchFormAll.submit();
+  }
+
+  // Event listener for the search button
+  var searchButton = document.getElementById("search-input").querySelector("input[type='submit']");
+  searchButton.addEventListener("click", function(event) {
+    event.preventDefault();
+    submitFormWithCategoryFilter();
+  });
+</script>
 {% endblock %}

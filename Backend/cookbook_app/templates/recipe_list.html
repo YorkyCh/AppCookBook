@@ -4,7 +4,9 @@
 <header>
   <nav>
     <div class="navbar-left">
-      <h1><a href="{% url 'index' %}">Cookbook App</a></h1>
+      <h1><a href="{% url 'index' %}">Pollo Cookbook</a></h1>
+      <h1><a href="{% url 'recipe_list' %}">List</a></h1>
+
     </div>
     <div class="navbar-right">
       <div>
@@ -15,7 +17,7 @@
         </form>
       </div>
       <div class="">
-        <a href="{% url 'add_recipe' %}">Add Recipe</a>
+        <a href="{% url 'add_recipe' %}">add recipe</a>
       </div>
     </div>
   </nav>

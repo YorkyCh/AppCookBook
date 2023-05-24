@@ -1,10 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.forms import formset_factory, inlineformset_factory
-from .models import Recipe, Ingredient, Category, IngredientAmount, MeasurementUnit, RecipeIngredient
-from .forms import RecipeForm, IngredientAmountForm, RecipeIngredientForm
-from django.db.models import Q 
+from django.forms import inlineformset_factory
+from django.db.models import Q
 from django.forms.widgets import CheckboxSelectMultiple
-from django.db.models import F
+from .models import Recipe, Ingredient, Category, RecipeIngredient
+from .forms import RecipeForm, RecipeIngredientForm
 
 
 def add_recipe(request):
@@ -25,7 +24,7 @@ def add_recipe(request):
         if form.is_valid() and formset.is_valid():
             recipe = form.save(commit=False)
             recipe.portion_size = form.cleaned_data['portion_size']
-            recipe.base_portion_size = form.cleaned_data['portion_size']  # Set the base portion size when creating the recipe
+            recipe.base_portion_size = form.cleaned_data['portion_size']
             recipe.save()
 
             recipe.categories.set(form.cleaned_data['categories'])
@@ -41,13 +40,12 @@ def add_recipe(request):
             print(form.errors)
             print(formset.errors)
 
-        
     else:
         form = RecipeForm()
         formset = RecipeIngredientFormSet(
             prefix='ingredients',
             queryset=RecipeIngredient.objects.none(),
-            initial=[{'ingredient': ingredient} for ingredient in Ingredient.objects.all()]  # Add initial data for ingredient field
+            initial=[{'ingredient': ingredient} for ingredient in Ingredient.objects.all()]
         )
 
     return render(request, 'add_recipe.html', {
@@ -55,6 +53,7 @@ def add_recipe(request):
         'formset': formset,
         'categories': categories,
     })
+
 
 def update_recipe(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
@@ -75,7 +74,6 @@ def update_recipe(request, pk):
         if form.is_valid() and formset.is_valid():
             recipe = form.save(commit=False)
 
-            # Update the base_portion_size if the portion_size has changed in the form
             if 'portion_size' in form.changed_data:
                 recipe.base_portion_size = form.cleaned_data['portion_size']
 
@@ -86,7 +84,6 @@ def update_recipe(request, pk):
 
             recipe.save()
 
-            # Clear existing categories and set the selected categories from the form
             recipe.categories.clear()
             categories_ids = request.POST.getlist('categories')
             categories = Category.objects.filter(id__in=categories_ids)
@@ -94,17 +91,16 @@ def update_recipe(request, pk):
 
             formset_instances = formset.save(commit=False)
             for formset_instance in formset_instances:
-                formset_instance.recipe = recipe  # Set the recipe instance for each formset instance
+                formset_instance.recipe = recipe
                 formset_instance.save()
 
             formset.save_m2m()
 
-            # Reconstruct the form with updated category data
             form = RecipeForm(instance=recipe)
             form.fields['categories'].widget = CheckboxSelectMultiple()
             form.fields['categories'].queryset = Category.objects.all()
             form.fields['categories'].initial = recipe.categories.all()
-            form.fields['portion_size'].initial = recipe.portion_size  # Set the initial portion size
+            form.fields['portion_size'].initial = recipe.portion_size
             formset = RecipeIngredientFormSet(prefix='ingredients', instance=recipe)
 
             return redirect('recipe_detail', recipe.pk)
@@ -118,7 +114,7 @@ def update_recipe(request, pk):
         form.fields['categories'].widget = CheckboxSelectMultiple()
         form.fields['categories'].queryset = Category.objects.all()
         form.fields['categories'].initial = recipe.categories.all()
-        form.fields['portion_size'].initial = recipe.portion_size  # Set the initial portion size
+        form.fields['portion_size'].initial = recipe.portion_size
         formset = RecipeIngredientFormSet(prefix='ingredients', instance=recipe)
 
     return render(request, 'update_recipe.html', {
@@ -129,16 +125,14 @@ def update_recipe(request, pk):
     })
 
 
-
-
-def delete_recipe(request, pk):
+def delete_recipe(pk):
     recipe = get_object_or_404(Recipe, pk=pk)
     recipe.delete()
     return redirect('recipe_list')
 
+
 def recipe_detail(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
-    initial_portion_size = recipe.base_portion_size
 
     if request.method == 'POST':
         new_portion_size = int(request.POST.get('portion_size', 1))
@@ -147,7 +141,7 @@ def recipe_detail(request, pk):
 
     ingredient_amounts = []
     for ingredient_amount in recipe.recipeingredient_set.all():
-        adjusted_amount = round((float(ingredient_amount.amount) * int(recipe.portion_size)) / int(recipe.base_portion_size), 2)  # Use base_portion_size here
+        adjusted_amount = round((float(ingredient_amount.amount) * int(recipe.portion_size)) / int(recipe.base_portion_size), 2)
         ingredient_amounts.append({
             'ingredient': ingredient_amount.ingredient,
             'adjusted_amount': adjusted_amount,
@@ -162,9 +156,11 @@ def recipe_detail(request, pk):
     }
     return render(request, 'recipe_detail.html', context)
 
+
 def recipe_list(request):
     recipes = Recipe.objects.all()
     return render(request, 'recipe_list.html', {'recipes': recipes})
+
 
 def index(request):
     categories = Category.objects.all()
@@ -173,10 +169,10 @@ def index(request):
 
 def recipe_search(request):
     search_input = request.GET.get('keyword', '')
-    category_filter = request.GET.getlist('category_filter')
+    category_filter = request.GET.getlist('category-filter')
 
-    # Filter recipes by name and description
     recipes = Recipe.objects.filter(Q(name__icontains=search_input) | Q(description__icontains=search_input))
+
     if category_filter:
         recipes = recipes.filter(categories__in=category_filter)
 
