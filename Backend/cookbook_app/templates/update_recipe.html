@@ -8,7 +8,7 @@
 {% block content %}
 <div class="main-block" style="margin-top: 190px;">
   <h1>Edit Recipe</h1>
-  <form method="post" enctype="multipart/form-data" action="{% url 'update_recipe' recipe.id %}">
+  <form method="post" enctype="multipart/form-data" action="{% url 'update_recipe' recipe.pk %}">
     {% csrf_token %}
     <div style="display: flex; align-items: center; margin-bottom: 10px;">
       <div>
@@ -27,14 +27,15 @@
           <div style="margin-left: 15px">{{ form.spiciness }}</div>
         </div>
         <div style="margin-bottom: 50px">
-            <h3>Categories:</h3>
-    {% for category in categories %}
-    <div>
-      <input type="checkbox" name="categories" value="{{ category.pk }}" id="category_{{ category.pk }}"
-             {% if category in form.initial.categories.all %}checked{% endif %}>
-      <label for="category_{{ category.pk }}">{{ category.name }}</label>
-    </div>
-    {% endfor %}
+          <h3>Categories:</h3>
+          {% for checkbox in form.categories %}
+            <div class="checkbox">
+              <label>
+                {{ checkbox.tag }}
+                {{ checkbox.choice_label }}
+              </label>
+            </div>
+          {% endfor %}
         </div>
       </div>
 
@@ -49,7 +50,7 @@
         </div>
       </div>
     </div>
-      
+
         
 
     <div style="display: flex; align-items: center; margin-bottom: 10px;">
@@ -57,8 +58,19 @@
         <div>
                 <div style="margin-left: 10px;">
                   {{ form.description }}
+                  <div style="margin-bottom: 10px;">
+                    <div>{{ form.steps.label_tag }}</div>
+                    <div style="margin-left: 15px">{{ form.steps }}</div>
+                  </div>
                 </div>
         </div>
+    </div>
+
+    <div>
+      <label for="{{ form.portion_size.id_for_label }}">Portion Size:</label>
+      <div>
+        {{ form.portion_size }}
+      </div>
     </div>
 
 
@@ -68,53 +80,120 @@
     <div id="ingredients-container">
       {% for form in formset %}
       <div class="ingredient-input">
-        {{ form.ingredient.label_tag }} {{ form.ingredient }}
-        {{ form.amount.label_tag }} {{ form.amount }}
-        {{ form.unit|add_class:"ingredient-select" }} <!-- Updated class attribute name -->
+        {{ form.id }}
+        <div class="ingredient-field">
+          {{ form.ingredient.label_tag }} {{ form.ingredient }}
+        </div>
+        <div class="amount-field">
+          {{ form.amount.label_tag }} {{ form.amount }}
+        </div>
+        <div class="unit-field">
+          {{ form.unit|add_class:"ingredient-select" }}
+        </div>
+        <div class="remove-button">
+          <button type="button" class="remove-ingredient-btn" style="
+          background-color: #ff6f00;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        ">Remove</button>
+        </div>
       </div>
       {% endfor %}
     </div>
+    
     <button type="button" id="add-ingredient-btn">Add Ingredient</button>
-    <button type="submit">Update Recipe</button>
+    
+
+    <div style="justify-content: space-between;
+    display: flex;
+    width: 55%;
+    margin-top: 10px">
+    <button type="button" id="add-ingredient-btn" style="
+    background-color: #ff6f00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  ">Add Ingredient</button>
+    <button type="submit" style="
+    background-color: #ff6f00;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  ">Update Recipe</button>
+    </div>
+
+
+    {% if form_errors %}
+  <ul>
+    {% for error in form_errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% if formset_errors %}
+  <ul>
+    {% for error in formset_errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
 </div>
 
 </div>
 
 <script>
-  $(document).ready(function() {
-    var formCount = $('#id_ingredients-TOTAL_FORMS').val();
-    var ingredientForm = $('#ingredients-container').children('.ingredient-input').first().clone();
+$(document).ready(function() {
+  var formCount = $('#id_ingredients-TOTAL_FORMS').val();
+  var ingredientForm = $('#ingredients-container').children('.ingredient-input').first().clone();
 
-    $('#add-ingredient-btn').click(function(e) {
-      e.preventDefault();
-      var newForm = ingredientForm.clone();
-      newForm.find('input, select').each(function() {
-        var name = $(this).attr('name').replace('-0-', '-' + formCount + '-');
-        var id = 'id_' + name;
-        $(this).attr({
-          'name': name,
-          'id': id
-        }).val('').removeAttr('checked');
-      });
-      $('#ingredients-container').append(newForm);
-      formCount++;
-      $('#id_ingredients-TOTAL_FORMS').val(formCount);
-
-      // Initialize Select2 for the newly added ingredient fields
-      newForm.find('.ingredient-select').select2({
-        width: 'resolve'
-      });
+  $('#add-ingredient-btn').click(function(e) {
+    e.preventDefault();
+    var newForm = ingredientForm.clone();
+    newForm.find('input, select').each(function() {
+      var name = $(this).attr('name').replace('-0-', '-' + formCount + '-');
+      var id = 'id_' + name;
+      $(this).attr({
+        'name': name,
+        'id': id
+      }).val('').removeAttr('checked');
     });
+    newForm.find('.remove-ingredient-btn').click(removeIngredient); // Add event listener to remove button
+    $('#ingredients-container').append(newForm);
+    formCount++;
+    $('#id_ingredients-TOTAL_FORMS').val(formCount);
 
-    // Initialize Select2 for the initial ingredient fields
-    $('.ingredient-select').select2({
+    // Initialize Select2 for the newly added ingredient fields
+    newForm.find('.ingredient-select').select2({
       width: 'resolve'
     });
   });
 
-  // Reinitialize Select2 after the formset is submitted
-  $(document).on('submit', 'form', function() {
-    $('.ingredient-select').select2('destroy');
+  // Initialize Select2 for the initial ingredient fields
+  $('.ingredient-select').select2({
+    width: 'resolve'
   });
+
+  // Event listener for remove button
+  $('.remove-ingredient-btn').click(removeIngredient);
+
+  // Function to remove ingredient form
+  function removeIngredient() {
+    var form = $(this).closest('.ingredient-input');
+    form.remove();
+    formCount--;
+    $('#id_ingredients-TOTAL_FORMS').val(formCount);
+  }
+});
+
+// Reinitialize Select2 after the formset is submitted
+$(document).on('submit', 'form', function() {
+  $('.ingredient-select').select2('destroy');
+});
 </script>
 {% endblock %}

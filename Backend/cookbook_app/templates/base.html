@@ -17,7 +17,6 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <!-- Include Select2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
     {% block form_styles %}
     <style>
       /* Add Mexican-inspired styles here */
@@ -53,7 +52,7 @@
         background-position: center 45%; /* Moved the background image down */
         background-repeat: no-repeat;
         background-color: rgba(255, 255, 255, 0.8); /* Added semi-transparent background */
-        box-shadow: 0 0 10px #fdd835; /* Adjust these values to change the shadow's appearance */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Adjust these values to change the shadow's appearance */
         border-radius: 10px;
         padding: 10px;
         display: flex;
@@ -164,6 +163,7 @@
       max-width: 800px;
       box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
       border: 2px solid #ff6f00; /* Deep orange border for the main block */
+      margin-top: 200px;
     }
 
     .wide-textarea {

@@ -34,41 +34,57 @@ class RecipeForm(forms.ModelForm):
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=False
+        required=False,
+        error_messages={'required': 'Please select at least one category.'}
     )
-    image = forms.ImageField(widget=CustomClearableFileInput, validators=[validate_image])
-    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'wide-textarea'}))
-
+    image = forms.ImageField(widget=CustomClearableFileInput, validators=[validate_image], error_messages={'required': 'Please upload an image.'})
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'wide-textarea'}), error_messages={'required': 'Please provide a description.'})
+    steps = forms.CharField(widget=forms.Textarea, required=True, error_messages={'required': 'Please provide the steps.'})
+    portion_size = forms.IntegerField(min_value=1, initial=1, required=True, error_messages={'required': 'Please provide the portion size.'})
+    
     class Meta:
         model = Recipe
-        fields = ('name', 'description', 'preparation_time', 'image', 'spiciness', 'steps', 'categories')
+        fields = ('name', 'description', 'preparation_time', 'image', 'spiciness', 'steps', 'categories', 'portion_size')
 
+    def clean(self):
+        cleaned_data = super().clean()
+        categories = cleaned_data.get('categories')
+
+        if not categories:
+            self.add_error('categories', self.fields['categories'].error_messages['required'])
+
+        return cleaned_data
 
 class IngredientAmountForm(forms.ModelForm):
-    unit = forms.ModelChoiceField(queryset=MeasurementUnit.objects.all(), widget=forms.Select(attrs={'class': 'unit-select'}))
+    unit = forms.ModelChoiceField(queryset=MeasurementUnit.objects.all(), widget=forms.Select(attrs={'class': 'unit-select'}), required=False)  # Made unit optional
 
     class Meta:
         model = IngredientAmount
-        fields = ('ingredient', 'amount', 'unit')
+        exclude = ('id',)  # Excluded 'id' field
 
 class RecipeIngredientForm(forms.ModelForm):
-    ingredient = s2forms.ModelSelect2Widget(
-        queryset=Ingredient.objects.all(),
-        search_fields=['name__icontains'],
-        attrs={'style': 'width: 100%'}
-    )
-    unit = forms.ModelChoiceField(queryset=MeasurementUnit.objects.all(), widget=s2forms.Select2Widget)
+    ingredient = forms.ModelChoiceField(queryset=Ingredient.objects.all(), widget=forms.Select(attrs={'class': 'ingredient-select'}))
+    unit = forms.ModelChoiceField(queryset=MeasurementUnit.objects.all(), widget=forms.Select(attrs={'class': 'ingredient-select'}))
 
     class Meta:
         model = RecipeIngredient
-        fields = ('ingredient', 'amount', 'unit')
-
-    def clean_amount(self):
-        amount = self.cleaned_data.get('amount')
-        if not amount:
-            return 1
-        return amount
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['ingredient'].widget.attrs.update({'class': 'ingredient-select'})
+        fields = ('id', 'ingredient', 'amount', 'unit')  # Include the 'id' field
+        widgets = {
+            'unit': forms.Select(attrs={'class': 'ingredient-select'}),
+        }
+        labels = {
+            'ingredient': 'Ingredient',
+            'amount': 'Amount',
+            'unit': 'Unit',
+        }
+        error_messages = {
+            'ingredient': {
+                'required': 'Please select an ingredient.',
+            },
+            'amount': {
+                'required': 'Please enter the amount.',
+            },
+            'unit': {
+                'required': 'Please select a unit.',
+            },
+        }

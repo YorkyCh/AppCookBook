@@ -17,8 +17,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cookbook_app',
     'widget_tweaks',
-    'django_select2'
-    
+    'django_select2',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [
@@ -92,6 +92,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'staticfiles'),
     os.path.join(BASE_DIR, 'staticfiles/admin/css'),
+    
 ]
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'images')

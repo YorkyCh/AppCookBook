@@ -4,6 +4,7 @@ from .models import Recipe, Ingredient, Category, IngredientAmount, MeasurementU
 from .forms import RecipeForm, IngredientAmountForm, RecipeIngredientForm
 from django.db.models import Q 
 from django.forms.widgets import CheckboxSelectMultiple
+from django.db.models import F
 
 
 def add_recipe(request):
@@ -15,15 +16,19 @@ def add_recipe(request):
         extra=1
     )
 
-    categories = Category.objects.all()  # Retrieve categories
+    categories = Category.objects.all()
 
     if request.method == 'POST':
         form = RecipeForm(request.POST, request.FILES)
         formset = RecipeIngredientFormSet(request.POST, prefix='ingredients', queryset=RecipeIngredient.objects.none())
 
         if form.is_valid() and formset.is_valid():
-            recipe = form.save()
-            recipe.categories.set(request.POST.getlist('categories'))
+            recipe = form.save(commit=False)
+            recipe.portion_size = form.cleaned_data['portion_size']
+            recipe.base_portion_size = form.cleaned_data['portion_size']  # Set the base portion size when creating the recipe
+            recipe.save()
+
+            recipe.categories.set(form.cleaned_data['categories'])
 
             for ingredient_form in formset:
                 if ingredient_form.cleaned_data:
@@ -31,22 +36,25 @@ def add_recipe(request):
                     ingredient.recipe = recipe
                     ingredient.save()
 
-            return redirect('recipe_detail', recipe.pk)
+            return redirect('recipe_detail', pk=recipe.pk)
+        else:
+            print(form.errors)
+            print(formset.errors)
+
+        
     else:
         form = RecipeForm()
-        formset = RecipeIngredientFormSet(prefix='ingredients', queryset=RecipeIngredient.objects.none())
+        formset = RecipeIngredientFormSet(
+            prefix='ingredients',
+            queryset=RecipeIngredient.objects.none(),
+            initial=[{'ingredient': ingredient} for ingredient in Ingredient.objects.all()]  # Add initial data for ingredient field
+        )
 
     return render(request, 'add_recipe.html', {
         'form': form,
         'formset': formset,
         'categories': categories,
     })
-
-
-import logging
-
-logger = logging.getLogger(__name__)
-
 
 def update_recipe(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
@@ -62,27 +70,55 @@ def update_recipe(request, pk):
 
     if request.method == 'POST':
         form = RecipeForm(request.POST, request.FILES, instance=recipe)
-        form.fields['categories'].widget = CheckboxSelectMultiple()  # Use CheckboxSelectMultiple widget for categories field
         formset = RecipeIngredientFormSet(request.POST, prefix='ingredients', instance=recipe)
 
         if form.is_valid() and formset.is_valid():
-            # Save the form without committing the changes to the database yet
             recipe = form.save(commit=False)
 
-            # Check if a new image is uploaded
+            # Update the base_portion_size if the portion_size has changed in the form
+            if 'portion_size' in form.changed_data:
+                recipe.base_portion_size = form.cleaned_data['portion_size']
+
+            recipe.save()
+
             if 'image' in request.FILES:
                 recipe.image = request.FILES['image']
 
-            recipe.save()  # Save the recipe instance with the updated image
+            recipe.save()
 
-            recipe.categories.set(form.cleaned_data['categories'])  # Set the categories from the form
+            # Clear existing categories and set the selected categories from the form
+            recipe.categories.clear()
+            categories_ids = request.POST.getlist('categories')
+            categories = Category.objects.filter(id__in=categories_ids)
+            recipe.categories.set(categories)
 
-            formset.save()  # Save the formset
+            formset_instances = formset.save(commit=False)
+            for formset_instance in formset_instances:
+                formset_instance.recipe = recipe  # Set the recipe instance for each formset instance
+                formset_instance.save()
+
+            formset.save_m2m()
+
+            # Reconstruct the form with updated category data
+            form = RecipeForm(instance=recipe)
+            form.fields['categories'].widget = CheckboxSelectMultiple()
+            form.fields['categories'].queryset = Category.objects.all()
+            form.fields['categories'].initial = recipe.categories.all()
+            form.fields['portion_size'].initial = recipe.portion_size  # Set the initial portion size
+            formset = RecipeIngredientFormSet(prefix='ingredients', instance=recipe)
 
             return redirect('recipe_detail', recipe.pk)
+
+        else:
+            print(form.errors)
+            print(formset.errors)
+
     else:
         form = RecipeForm(instance=recipe)
-        form.fields['categories'].widget = CheckboxSelectMultiple()  # Use CheckboxSelectMultiple widget for categories field
+        form.fields['categories'].widget = CheckboxSelectMultiple()
+        form.fields['categories'].queryset = Category.objects.all()
+        form.fields['categories'].initial = recipe.categories.all()
+        form.fields['portion_size'].initial = recipe.portion_size  # Set the initial portion size
         formset = RecipeIngredientFormSet(prefix='ingredients', instance=recipe)
 
     return render(request, 'update_recipe.html', {
@@ -94,14 +130,36 @@ def update_recipe(request, pk):
 
 
 
+
 def delete_recipe(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
     recipe.delete()
     return redirect('recipe_list')
 
 def recipe_detail(request, pk):
-    recipe = Recipe.objects.get(pk=pk)
-    context = {'recipe': recipe}
+    recipe = get_object_or_404(Recipe, pk=pk)
+    initial_portion_size = recipe.base_portion_size
+
+    if request.method == 'POST':
+        new_portion_size = int(request.POST.get('portion_size', 1))
+        recipe.portion_size = new_portion_size
+        recipe.save()
+
+    ingredient_amounts = []
+    for ingredient_amount in recipe.recipeingredient_set.all():
+        adjusted_amount = round((float(ingredient_amount.amount) * int(recipe.portion_size)) / int(recipe.base_portion_size), 2)  # Use base_portion_size here
+        ingredient_amounts.append({
+            'ingredient': ingredient_amount.ingredient,
+            'adjusted_amount': adjusted_amount,
+            'unit': ingredient_amount.unit
+        })
+    steps = recipe.steps.split("\n") if recipe.steps else []
+
+    context = {
+        'recipe': recipe,
+        'ingredient_amounts': ingredient_amounts,
+        'steps': steps,
+    }
     return render(request, 'recipe_detail.html', context)
 
 def recipe_list(request):

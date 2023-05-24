@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import RegexValidator
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
@@ -26,36 +25,38 @@ class Recipe(models.Model):
     description = models.TextField()
     preparation_time = models.PositiveIntegerField()
     categories = models.ManyToManyField(Category)  # Add a many-to-many relationship with Category
-    cook_time = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to='', default='default_image.png')
     spiciness = models.IntegerField(choices=SPICINESS_CHOICES, default=1)
     steps = models.TextField(default='')
+    portion_size = models.IntegerField(default=1)
+    base_portion_size = models.IntegerField(default=1)  
+
 
     def __str__(self):
         return self.name
 
 
+
+
+
+class MeasurementUnit(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     amount = models.CharField(max_length=50)
-    unit = models.CharField(max_length=50)
+    unit = models.ForeignKey(MeasurementUnit, on_delete=models.CASCADE)  # Update to use ForeignKey
 
     def __str__(self):
         return f"{self.recipe.name}: {self.amount} {self.unit}"
-
-class MeasurementUnit(models.Model):
-    name = models.CharField(max_length=100)
-    conversion_rate = models.DecimalField(max_digits=10, decimal_places=4)
-
-    def __str__(self):
-        return self.name
-
-
+    
 class IngredientAmount(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(max_digits=5, decimal_places=2)  # Changed to DecimalField
     unit = models.ForeignKey(MeasurementUnit, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='ingredient_amounts')
 

@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
-{% load custom_tags %}
 
 {% block title %}{{ recipe.name }}{% endblock %}
 
 {% block content %}
+{% load mathfilters %}
 <div class="main-block" style="margin-top: 200px;">
   <h1>{{ recipe.name }}</h1>
   <img src="{{ recipe.image.url }}" alt="{{ recipe.name }} image" class="recipe-image">
+  <form method="post" action="{% url 'recipe_detail' recipe.pk %}">
+    {% csrf_token %}
+    <label for="portion_size">Portion Size:</label>
+    <input type="number" name="portion_size" id="portion_size" min="1" value="{{ recipe.portion_size }}" required>
+    <button type="submit">Adjust Portion Size</button>
+  </form>
   <ul>
     <li><strong>Preparation Time:</strong> {{ recipe.preparation_time }} minutes</li>
     <li><strong>Cook Time:</strong> {{ recipe.cook_time }} minutes</li>
@@ -14,7 +20,7 @@
     <li><strong>Description:</strong> {{ recipe.description }}</li>
     <li><strong>Steps:</strong>
       <ol>
-        {% for step in recipe.steps|split:"\n" %}
+        {% for step in steps %}
         <li>{{ step }}</li>
         {% endfor %}
       </ol>
@@ -26,8 +32,8 @@
     </li>
     <li><strong>Ingredients:</strong>
       <ul>
-        {% for ingredient_amount in recipe.recipeingredient_set.all %}
-          <li>{{ ingredient_amount.ingredient.name }} - {{ ingredient_amount.amount }} {{ ingredient_amount.unit }}</li>
+        {% for ingredient_amount in ingredient_amounts %}
+          <li>{{ ingredient_amount.ingredient.name }} - {{ ingredient_amount.adjusted_amount }} {{ ingredient_amount.unit }}</li>
         {% endfor %}
       </ul>
     </li>
